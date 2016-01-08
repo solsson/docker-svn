@@ -18,6 +18,7 @@ RUN buildDeps=' \
 	' \
 	set -x \
 	&& apt-get update \
+	&& apt-get install -y --no-install-recommends libsqlite3-0 \
 	&& apt-get install -y --no-install-recommends $buildDeps \
 	&& rm -r /var/lib/apt/lists/* \
 	&& curl -SL "$SVN_PEOPLE_URL" -o subversion.asc \
