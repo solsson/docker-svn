@@ -15,7 +15,6 @@ RUN buildDeps=' \
 		make \
 		libsqlite3-dev \
 		libz-dev \
-nano \
 	' \
 	set -x \
 	&& apt-get update \
@@ -34,7 +33,12 @@ nano \
 	&& ./configure \
 	&& make -j"$(nproc)" \
 	&& make install \
+	&& /sbin/ldconfig \
 	&& cd ../../ \
-&& exit 0 \
 	&& rm -r src/svn \
-	&& apt-get purge -y --auto-remove $buildDeps
+	&& apt-get purge -y --auto-remove $buildDeps \
+	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
+
+ADD conf conf/svn/
+
+VOLUME /svn
