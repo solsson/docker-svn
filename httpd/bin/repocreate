@@ -1,0 +1,62 @@
+#!/usr/bin/perl -ws
+use strict;
+
+# This could be a REST api one day
+print "Content-type: text/plain\n\n";
+
+use Getopt::Long;
+my %o = (
+  'parent' => '/svn'
+);
+
+my $name = '';
+sub reponame {
+  die("Respository name already set to $name") if $name;
+  $name = $_[0];
+}
+
+GetOptions (\%o,
+            # allow revpropchange from this user (typically sync user)
+            "revpropchange|c=s",
+            # empty to generate
+            "uuid|u=s",
+            # chgroup repo to this user
+            "group|g=s",
+            '<>' => \&reponame
+            )
+or die("Error in command line arguments\n");
+
+die("Repository name is a required argument") if not $name;
+
+my $repo = "$o{'parent'}/$name";
+`umask 0022 && svnadmin create $repo`;
+${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Created repository $repo\n";
+
+if (exists($o{'uuid'})) {
+  `svnadmin setuuid $repo $o{'uuid'}`;
+  ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "UUID changed to $o{'uuid'}\n";
+}
+
+if (exists($o{'revpropchange'})) {
+  my $hook = "$repo/hooks/pre-revprop-change";
+  open (FILE, ">> $hook") || die "Failed to open hook $hook for writing\n";
+  print FILE <<HOOK;
+#!/bin/sh
+REPOS="\$1"
+REV="\$2"
+USER="\$3"
+PROPNAME="\$4"
+ACTION="\$5"
+if [ "\$USER" = "$o{'revpropchange'}" ]; then exit 0; fi
+echo "Revision property change blocked" >&2
+exit 1
+HOOK
+  close(FILE);
+  `chmod ug+x $hook`;
+  ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Created hook that allows user '$o{'revpropchange'}' to set revprops\n";
+}
+
+if (exists($o{'group'})) {
+  `chgrp -R $o{'group'} $repo`;
+  ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Group set to $o{'group'}\n";
+}

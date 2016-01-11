@@ -42,4 +42,6 @@ RUN buildDeps=' \
 
 ADD conf conf/svn/
 
+ADD bin /usr/local/bin
+
 VOLUME /svn
