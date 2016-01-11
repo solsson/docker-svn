@@ -20,7 +20,9 @@ GetOptions (\%o,
             "revpropchange|c=s",
             # empty to generate
             "uuid|u=s",
-            # chgroup repo to this user
+            # chown repo to this user
+            "owner|o=s",
+            # chgrp repo to this user
             "group|g=s",
             '<>' => \&reponame
             )
@@ -29,7 +31,7 @@ or die("Error in command line arguments\n");
 die("Repository name is a required argument") if not $name;
 
 my $repo = "$o{'parent'}/$name";
-`umask 0022 && svnadmin create $repo`;
+`svnadmin create $repo`;
 ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Created repository $repo\n";
 
 if (exists($o{'uuid'})) {
@@ -54,6 +56,11 @@ HOOK
   close(FILE);
   `chmod ug+x $hook`;
   ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Created hook that allows user '$o{'revpropchange'}' to set revprops\n";
+}
+
+if (exists($o{'owner'})) {
+  `chown -R $o{'owner'} $repo`;
+  ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Owner set to $o{'owner'}\n";
 }
 
 if (exists($o{'group'})) {
