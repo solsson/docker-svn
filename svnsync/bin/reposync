@@ -1,0 +1,112 @@
+#!/usr/bin/perl -w
+use strict;
+
+use SVN::Client;
+my $ctx = new SVN::Client(
+  auth => [SVN::Client::get_simple_provider(),
+  SVN::Client::get_simple_prompt_provider(\&simple_prompt,2),
+  SVN::Client::get_username_provider()]
+);
+
+use Getopt::Long;
+my %o = ();
+my $a;
+my $b;
+
+sub reponame {
+  if ($b) {
+    die('Maximum 2 repositories supported');
+  } elsif ($a) {
+    $b = $_[0];
+  } else {
+    $a = $_[0];
+  }
+}
+
+GetOptions (\%o,
+            '<>' => \&reponame
+            )
+or die("Error in command line arguments\n");
+
+$a and $b or die("Requires two repository URL arguments");
+
+print "Will try to keep $a and $b in sync\n";
+
+sub info {
+  my $url = $_[0];
+  my %relevant;
+
+  my $receiver = sub {
+    my( $path, $info, $pool ) = @_;
+
+    $relevant{'rev'} = $info->rev();
+    $relevant{'uuid'} = $info->repos_UUID();
+    $relevant{'date'} = $info->last_changed_date();
+    $relevant{'revn'} = $info->last_changed_rev();
+  };
+  $ctx->info($url, undef, 'HEAD', $receiver, 0 );
+  return \%relevant;
+}
+
+sub rev0 {
+  my $url = $_[0];
+  my %relevant;
+
+  my ($rph, $rplrev) = $ctx->revprop_list($url, 0);
+
+  $relevant{'date'} = $rph->{'svn:date'};
+  $relevant{'sync-currently-copying'} = $rph->{'svn:sync-currently-copying'};
+  $relevant{'sync-lock'} = $rph->{'svn:sync-lock'};
+  $relevant{'sync-from-url'} = $rph->{'svn:sync-from-url'};
+  $relevant{'sync-from-uuid'} = $rph->{'svn:sync-from-uuid'};
+  $relevant{'sync-last-merged-rev'} = $rph->{'svn:sync-last-merged-rev'};
+  return \%relevant;
+}
+
+sub isbusy {
+  my (%revprops) = @_;
+
+  return exists $revprops{'sync-lock'};
+}
+
+sub init {
+  my $from = $_[0];
+  my $to = $_[1];
+}
+
+sub sync {
+  my $from = $_[0];
+  my $to = $_[1];
+}
+
+sub pair {
+  my $urla = $_[0];
+  my $urlb = $_[1];
+
+  print "Got pair $urla $urlb\n";
+
+  my $an = info($urla);
+  my $ap = rev0($urla);
+  my $bn = info($urlb);
+  my $bp = rev0($urlb);
+
+  print "Repo A rev".$an{'rev'};
+
+  print "First repo is busy" and return if isbusy($ap);
+  print "Second repo is busy" and return if isbusy($bp);
+
+  #print "Sample keys: ". join('|', keys($bn)) . " " . join('|', keys($bp)) ."\n";
+}
+
+sub parentPair {
+  my $purla = $_[0];
+  my $purlb = $_[1];
+
+
+}
+
+sub forever {
+
+}
+
+pair($a, $b);
