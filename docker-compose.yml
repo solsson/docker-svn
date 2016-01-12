@@ -1,0 +1,16 @@
+svnsync:
+  build: ./svnsync
+  ports:
+   - "30010:80"
+svn1:
+  build: ./httpd
+  ports:
+   - "30001:80"
+  links:
+   - svnsync
+svn2:
+  build: ./httpd
+  ports:
+   - "30002:80"
+  links:
+   - svnsync
