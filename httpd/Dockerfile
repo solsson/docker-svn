@@ -40,8 +40,8 @@ RUN buildDeps=' \
 	&& apt-get purge -y --auto-remove $buildDeps \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
-ADD conf conf/svn/
+COPY conf/* conf/svn/
 
-ADD bin /usr/local/bin
+COPY bin/* /usr/local/bin/
 
 VOLUME /svn
