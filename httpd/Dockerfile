@@ -33,6 +33,7 @@ RUN buildDeps=' \
 	&& /sbin/ldconfig \
 	&& cd ../../ \
 	&& rm -r src/svn \
+	&& apt-get install curl \ # useful, not necessary
 	&& apt-get purge -y --auto-remove $buildDeps \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
