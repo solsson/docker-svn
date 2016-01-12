@@ -1,8 +1,5 @@
-#!/usr/bin/perl -ws
+#!/usr/bin/perl -w
 use strict;
-
-# This could be a REST api one day
-print "Content-type: text/plain\n\n";
 
 use Getopt::Long;
 my %o = (
