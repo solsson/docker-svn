@@ -1,16 +1,33 @@
+devhelp:
+  # docker-compose up -d && docker exec -ti dockersvn_devhelp_1 /bin/sh
+  # Then "apk add --update perl subversion perl-subversion; /svnbin/reposync"
+  image: alpine
+  volumes:
+   - ./httpd/bin:/httpd
+   - ./svnsync/bin:/svnsync
+  links:
+   - svnmaster
+   - svnbackup
+  command:
+   - "sleep"
+   - "100000"
+svnmaster:
+  build: ./httpd
+  ports:
+   - "30001:80"
+svnbackup:
+  build: ./httpd
+  ports:
+   - "30002:80"
 svnsync:
   build: ./svnsync
   ports:
    - "30010:80"
-svn1:
-  build: ./httpd
-  ports:
-   - "30001:80"
   links:
-   - svnsync
-svn2:
-  build: ./httpd
-  ports:
-   - "30002:80"
+   - svnmaster
+   - svnbackup
+svnservice:
+  # more work needed on this one
+  image: solsson/nginx-ssl-proxy
   links:
-   - svnsync
+   - svnmaster

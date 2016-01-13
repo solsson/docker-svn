@@ -28,10 +28,6 @@ GetOptions (\%o,
             )
 or die("Error in command line arguments\n");
 
-$a and $b or die("Requires two repository URL arguments");
-
-print "Will try to keep $a and $b in sync\n";
-
 sub info {
   my $url = shift;
   my %relevant;
@@ -128,15 +124,22 @@ sub pair {
 }
 
 sub parentPair {
-  my $purla = $_[0];
-  my $purlb = $_[1];
+  my ($purla, $purlb) = @_;
 
-  # TODO read Collection of Repositories XML from both and attempt to sync those that match in name, log warning for missing on either
+  # Read Collection of Repositories XML from both and attempt to sync those that match in name, log warning for missing on either
+  #use WWW::Curl;
 
+  return 0;
 }
 
 sub forever {
   # maybe repeating this procedure is the responsibility of docker scheduling or replication controllers?
 }
 
-pair($a, $b);
+if ($a and $b) {
+  pair($a, $b);
+} else {
+  print "No args given. Reposync might use ENV and naming conventions";
+  use Data::Dumper;
+  print Dumper(\%ENV);
+}

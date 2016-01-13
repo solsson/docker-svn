@@ -1,8 +1,9 @@
 
-FROM node
+FROM alpine
 
-COPY ./package.json /src/
-COPY ./*.js /src/
-RUN cd /src; npm install
+RUN apk add --update --no-cache perl subversion perl-subversion curl
+#RUN apk add --update --no-cache --repository http://dl-4.alpinelinux.org/alpine/edge/testing/ --allow-untrusted perl-www-curl
 
-ENTRYPOINT ["node", "/src/index.js"]
+COPY bin/* /usr/local/bin/
+
+ENTRYPOINT ["reposync"]
