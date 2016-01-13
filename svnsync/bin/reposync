@@ -92,8 +92,9 @@ sub sync {
   # Are existing revprops sane? url matching sync-url?
 
   print "Sync $from{url} => $to{url}\n";
-  `svnsync sync $to{url}`;
-  ${^CHILD_ERROR_NATIVE} and die("Sync failed!") or print "Sync exited normally\n";
+  my @args = ("svnsync", "sync", $to{url});
+  system(@args) == 0 or die("Sync failed!");
+  print "---- sync done ----\n";
 }
 
 sub pair {
