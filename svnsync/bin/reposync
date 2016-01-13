@@ -33,19 +33,19 @@ $a and $b or die("Requires two repository URL arguments");
 print "Will try to keep $a and $b in sync\n";
 
 sub info {
-  my $url = $_[0];
+  my $url = shift;
   my %relevant;
 
   my $receiver = sub {
     my( $path, $info, $pool ) = @_;
 
-    $relevant{'rev'} = $info->rev();
-    $relevant{'uuid'} = $info->repos_UUID();
-    $relevant{'date'} = $info->last_changed_date();
-    $relevant{'revn'} = $info->last_changed_rev();
+    $relevant{rev} = $info->rev();
+    $relevant{uuid} = $info->repos_UUID();
+    $relevant{date} = $info->last_changed_date();
+    $relevant{revn} = $info->last_changed_rev();
   };
   $ctx->info($url, undef, 'HEAD', $receiver, 0 );
-  return \%relevant;
+  return %relevant;
 }
 
 sub rev0 {
@@ -55,45 +55,54 @@ sub rev0 {
   my ($rph, $rplrev) = $ctx->revprop_list($url, 0);
 
   $relevant{'date'} = $rph->{'svn:date'};
+  # busy
   $relevant{'sync-currently-copying'} = $rph->{'svn:sync-currently-copying'};
   $relevant{'sync-lock'} = $rph->{'svn:sync-lock'};
+  # is sync dest
   $relevant{'sync-from-url'} = $rph->{'svn:sync-from-url'};
   $relevant{'sync-from-uuid'} = $rph->{'svn:sync-from-uuid'};
   $relevant{'sync-last-merged-rev'} = $rph->{'svn:sync-last-merged-rev'};
-  return \%relevant;
+  # custom, detect need to break sync lock
+  $relevant{'busy-detected-date'} = $rph->{'sync:busy-detected-date'};
+
+  return %relevant;
 }
 
 sub isbusy {
-  my (%revprops) = @_;
+  my %props = %{$_[0]};
 
-  return exists $revprops{'sync-lock'};
+  defined $props{'sync-lock'} or return 0;
+
+  print "TODO set busy-detected-date to svn style iso string\n";
+  return 1;
 }
 
 sub init {
-  my $from = $_[0];
-  my $to = $_[1];
+  my ($from, $to) = $_;
+
 }
 
 sub sync {
-  my $from = $_[0];
-  my $to = $_[1];
+  my ($from, $to) = $_;
+
 }
 
 sub pair {
-  my $urla = $_[0];
-  my $urlb = $_[1];
+  my ($urla, $urlb) = @_;
 
   print "Got pair $urla $urlb\n";
 
-  my $an = info($urla);
-  my $ap = rev0($urla);
-  my $bn = info($urlb);
-  my $bp = rev0($urlb);
+  my %an = info($urla);
+  my %ap = rev0($urla);
+  my %bn = info($urlb);
+  my %bp = rev0($urlb);
 
-  print "Repo A rev".$an{'rev'};
+  use Data::Dumper;
+  print "A:", Dumper(\%an, \%ap);
+  print "B:", Dumper(\%bn, \%bp);
 
-  print "First repo is busy" and return if isbusy($ap);
-  print "Second repo is busy" and return if isbusy($bp);
+  print "First repo is busy\n" and return if isbusy \%ap;
+  print "Second repo is busy\n" and return if isbusy \%bp;
 
   #print "Sample keys: ". join('|', keys($bn)) . " " . join('|', keys($bp)) ."\n";
 }
@@ -106,7 +115,7 @@ sub parentPair {
 }
 
 sub forever {
-
+  # maybe repeating this procedure is the responsibility of docker scheduling or replication controllers?
 }
 
 pair($a, $b);
