@@ -54,6 +54,7 @@ sub rev0 {
 
   my ($rph, $rplrev) = $ctx->revprop_list($url, 0);
 
+  $relevant{'url'} = $url;
   $relevant{'date'} = $rph->{'svn:date'};
   # busy
   $relevant{'sync-currently-copying'} = $rph->{'svn:sync-currently-copying'};
@@ -83,8 +84,16 @@ sub init {
 }
 
 sub sync {
-  my ($from, $to) = $_;
+  my %from = %{$_[0]};
+  my %to = %{$_[1]};
 
+  # If sync-* nonexistent on both we can clearly init.
+
+  # Are existing revprops sane? url matching sync-url?
+
+  print "Sync $from{url} => $to{url}\n";
+  `svnsync sync $to{url}`;
+  ${^CHILD_ERROR_NATIVE} and die("Sync failed!") or print "Sync exited normally\n";
 }
 
 sub pair {
@@ -101,16 +110,27 @@ sub pair {
   print "A:", Dumper(\%an, \%ap);
   print "B:", Dumper(\%bn, \%bp);
 
+  print "UUID differs $an{uuid} to $bn{uuid} so sync disallowed\n" and return unless $an{uuid} eq $bn{uuid};
   print "First repo is busy\n" and return if isbusy \%ap;
   print "Second repo is busy\n" and return if isbusy \%bp;
 
-  #print "Sample keys: ". join('|', keys($bn)) . " " . join('|', keys($bp)) ."\n";
+  if ($an{rev} > $bn{rev}) {
+    # TODO any additional check on info, before we drop that and sync based on "relevant"
+    sync(\%ap, \%bp);
+  } elsif ($an{rev} < $bn{rev}) {
+    # TODO any additional check on info, before we drop that and sync based on "relevant"
+    sync(\%bp, \%ap);
+  } else {
+    print "Repositories are equal\n";
+    return;
+  }
 }
 
 sub parentPair {
   my $purla = $_[0];
   my $purlb = $_[1];
 
+  # TODO read Collection of Repositories XML from both and attempt to sync those that match in name, log warning for missing on either
 
 }
 
