@@ -75,8 +75,12 @@ sub isbusy {
 }
 
 sub init {
-  my ($from, $to) = $_;
+  my %from = %{$_[0]};
+  my %to = %{$_[1]};
 
+  my @args = ("svnsync", "init", $to{url}, $from{url});
+  system(@args) == 0 or die("Sync init failed");
+  print "Initialized svnsync $from{url} => $to{url}\n";
 }
 
 sub sync {
@@ -84,6 +88,7 @@ sub sync {
   my %to = %{$_[1]};
 
   # If sync-* nonexistent on both we can clearly init.
+  init(\%from, \%to) unless defined $to{'sync-from-url'};
 
   # Are existing revprops sane? url matching sync-url?
 
@@ -127,7 +132,12 @@ sub parentPair {
   my ($purla, $purlb) = @_;
 
   # Read Collection of Repositories XML from both and attempt to sync those that match in name, log warning for missing on either
+
+  # Requires a testing package
   #use WWW::Curl;
+
+  # This script already depends on shell so unless we find an svnsync API we can use `curl`
+  # A java+svnkit script would be an alternative if long running shells cause issues
 
   return 0;
 }

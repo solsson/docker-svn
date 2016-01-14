@@ -1,10 +1,11 @@
 devhelp:
   # docker-compose up -d && docker exec -ti dockersvn_devhelp_1 /bin/sh
-  # Then "apk add --update perl subversion perl-subversion; /svnbin/reposync"
+  # # apk add --update perl subversion perl-subversion curl
+  # # /src/svnsync/bin/reposync
+  # # /src/svnsync/bin/reposync http://svnmaster/svn/r1 http://svnbackup/svn/r1
   image: alpine
   volumes:
-   - ./httpd/bin:/httpd
-   - ./svnsync/bin:/svnsync
+   - .:/src
   links:
    - svnmaster
    - svnbackup
