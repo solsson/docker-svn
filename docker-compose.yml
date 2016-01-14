@@ -27,6 +27,18 @@ svnsync:
   command:
    - "http://svnmaster/svn/r1"
    - "http://svnbackup/svn/r1"
+svnsync_cron:
+  build: ./svnsync-cron
+  ports:
+   - "30011:80"
+  links:
+   - svnmaster
+   - svnbackup
+  command:
+   - "-s"
+   - "* * * * *"
+   - "http://svnmaster/svn/r1"
+   - "http://svnbackup/svn/r1"
 svnservice:
   # more work needed on this one
   image: solsson/nginx-ssl-proxy
