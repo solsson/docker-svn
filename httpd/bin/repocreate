@@ -8,7 +8,7 @@ my %o = (
 
 my $name = '';
 sub reponame {
-  die("Respository name already set to $name") if $name;
+  die("Respository name already set to $name\n") if $name;
   $name = $_[0];
 }
 
