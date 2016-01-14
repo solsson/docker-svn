@@ -1,5 +1,6 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 use strict;
+use warnings;
 
 use SVN::Client;
 my $ctx = new SVN::Client(
@@ -29,46 +30,39 @@ GetOptions (\%o,
 or die("Error in command line arguments\n");
 
 sub info {
-  my $url = shift;
-  my %relevant;
+  my $repo = shift;
 
   my $receiver = sub {
     my( $path, $info, $pool ) = @_;
 
-    $relevant{rev} = $info->rev();
-    $relevant{uuid} = $info->repos_UUID();
-    $relevant{date} = $info->last_changed_date();
-    $relevant{revn} = $info->last_changed_rev();
+    $repo->{rev} = $info->rev();
+    $repo->{uuid} = $info->repos_UUID();
+    $repo->{date} = $info->last_changed_date();
+    $repo->{revn} = $info->last_changed_rev();
   };
-  $ctx->info($url, undef, 'HEAD', $receiver, 0 );
-  return %relevant;
+  $ctx->info($repo->{url}, undef, 'HEAD', $receiver, 0 );
 }
 
 sub rev0 {
-  my $url = $_[0];
-  my %relevant;
+  my $repo = shift;
 
-  my ($rph, $rplrev) = $ctx->revprop_list($url, 0);
+  my ($rph, $rplrev) = $ctx->revprop_list($repo->{url}, 0);
 
-  $relevant{'url'} = $url;
-  $relevant{'date'} = $rph->{'svn:date'};
   # busy
-  $relevant{'sync-currently-copying'} = $rph->{'svn:sync-currently-copying'};
-  $relevant{'sync-lock'} = $rph->{'svn:sync-lock'};
+  $repo->{'sync-currently-copying'} = $rph->{'svn:sync-currently-copying'};
+  $repo->{'sync-lock'} = $rph->{'svn:sync-lock'};
   # is sync dest
-  $relevant{'sync-from-url'} = $rph->{'svn:sync-from-url'};
-  $relevant{'sync-from-uuid'} = $rph->{'svn:sync-from-uuid'};
-  $relevant{'sync-last-merged-rev'} = $rph->{'svn:sync-last-merged-rev'};
-  # custom, detect need to break sync lock
-  $relevant{'busy-detected-date'} = $rph->{'sync:busy-detected-date'};
-
-  return %relevant;
+  $repo->{'sync-from-url'} = $rph->{'svn:sync-from-url'};
+  $repo->{'sync-from-uuid'} = $rph->{'svn:sync-from-uuid'};
+  $repo->{'sync-last-merged-rev'} = $rph->{'svn:sync-last-merged-rev'};
+  ## custom, detect need to break sync lock
+  #$repo->{'busy-detected-date'} = $rph->{'sync:busy-detected-date'};
 }
 
 sub isbusy {
-  my %props = %{$_[0]};
+  my %repo = %{$_[0]};
 
-  defined $props{'sync-lock'} or return 0;
+  defined $repo{'sync-lock'} or return 0;
 
   print "TODO set busy-detected-date to svn style iso string\n";
   return 1;
@@ -87,41 +81,37 @@ sub sync {
   my %from = %{$_[0]};
   my %to = %{$_[1]};
 
-  # If sync-* nonexistent on both we can clearly init.
-  init(\%from, \%to) unless defined $to{'sync-from-url'};
-
-  # Are existing revprops sane? url matching sync-url?
+  # Safe to initialize automatically if destination is empty and has no sync source already
+  init(\%from, \%to) unless $to{'rev'} or defined $to{'sync-from-url'};
 
   print "Sync $from{url} => $to{url}\n";
   my @args = ("svnsync", "sync", $to{url});
   system(@args) == 0 or die("Sync failed!");
-  print "---- sync done ----\n";
 }
 
 sub pair {
-  my ($urla, $urlb) = @_;
+  my %a = (url => $_[0]);
+  my %b = (url => $_[1]);
 
-  print "Got pair $urla $urlb\n";
+  print "Got pair $a{url}, $b{url}\n";
 
-  my %an = info($urla);
-  my %ap = rev0($urla);
-  my %bn = info($urlb);
-  my %bp = rev0($urlb);
+  info(\%a);
+  rev0(\%a);
+  info(\%b);
+  rev0(\%b);
 
-  use Data::Dumper;
-  print "A:", Dumper(\%an, \%ap);
-  print "B:", Dumper(\%bn, \%bp);
+  #use Data::Dumper;
+  #print "A:", Dumper(\%a);
+  #print "B:", Dumper(\%b);
 
-  print "UUID differs $an{uuid} to $bn{uuid} so sync disallowed\n" and return unless $an{uuid} eq $bn{uuid};
-  print "First repo is busy\n" and return if isbusy \%ap;
-  print "Second repo is busy\n" and return if isbusy \%bp;
+  print "UUID differs $a{uuid} to $b{uuid} so sync disallowed\n" and return unless $a{uuid} eq $b{uuid};
+  print "First repo is busy\n" and return if isbusy \%a;
+  print "Second repo is busy\n" and return if isbusy \%b;
 
-  if ($an{rev} > $bn{rev}) {
-    # TODO any additional check on info, before we drop that and sync based on "relevant"
-    sync(\%ap, \%bp);
-  } elsif ($an{rev} < $bn{rev}) {
-    # TODO any additional check on info, before we drop that and sync based on "relevant"
-    sync(\%bp, \%ap);
+  if ($a{rev} > $b{rev}) {
+    sync(\%a, \%b);
+  } elsif ($a{rev} < $b{rev}) {
+    sync(\%b, \%a);
   } else {
     print "Repositories are equal\n";
     return;
@@ -146,6 +136,9 @@ sub forever {
   # maybe repeating this procedure is the responsibility of docker scheduling or replication controllers?
 }
 
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime();
+print "This might be GMT not UTC:\n" if $isdst;
+printf("---- reposync start %04d-%02d-%02dT%02d:%02d:%02dZ ----\n", $year+1900, $mon+1, $mday, $hour, $min, $sec);
 if ($a and $b) {
   pair($a, $b);
 } else {
