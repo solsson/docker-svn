@@ -1,0 +1,148 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use SVN::Client;
+my $ctx = new SVN::Client(
+  auth => [SVN::Client::get_simple_provider(),
+  SVN::Client::get_simple_prompt_provider(\&simple_prompt,2),
+  SVN::Client::get_username_provider()]
+);
+
+use Getopt::Long;
+my %o = ();
+my $a;
+my $b;
+
+sub reponame {
+  if ($b) {
+    die("Maximum 2 repositories supported, had '$a' and '$b' but got '$_[0]'");
+  } elsif ($a) {
+    $b = $_[0];
+  } else {
+    $a = $_[0];
+  }
+}
+
+GetOptions (\%o,
+            '<>' => \&reponame
+            )
+or die("Error in command line arguments\n");
+
+sub info {
+  my $repo = shift;
+
+  my $receiver = sub {
+    my( $path, $info, $pool ) = @_;
+
+    $repo->{rev} = $info->rev();
+    $repo->{uuid} = $info->repos_UUID();
+    $repo->{date} = $info->last_changed_date();
+    $repo->{revn} = $info->last_changed_rev();
+  };
+  $ctx->info($repo->{url}, undef, 'HEAD', $receiver, 0 );
+}
+
+sub rev0 {
+  my $repo = shift;
+
+  my ($rph, $rplrev) = $ctx->revprop_list($repo->{url}, 0);
+
+  # busy
+  $repo->{'sync-currently-copying'} = $rph->{'svn:sync-currently-copying'};
+  $repo->{'sync-lock'} = $rph->{'svn:sync-lock'};
+  # is sync dest
+  $repo->{'sync-from-url'} = $rph->{'svn:sync-from-url'};
+  $repo->{'sync-from-uuid'} = $rph->{'svn:sync-from-uuid'};
+  $repo->{'sync-last-merged-rev'} = $rph->{'svn:sync-last-merged-rev'};
+  ## custom, detect need to break sync lock
+  #$repo->{'busy-detected-date'} = $rph->{'sync:busy-detected-date'};
+}
+
+sub isbusy {
+  my %repo = %{$_[0]};
+
+  defined $repo{'sync-lock'} or return 0;
+
+  print "TODO set busy-detected-date to svn style iso string\n";
+  return 1;
+}
+
+sub init {
+  my %from = %{$_[0]};
+  my %to = %{$_[1]};
+
+  my @args = ("svnsync", "init", $to{url}, $from{url});
+  system(@args) == 0 or die("Sync init failed");
+  print "Initialized svnsync $from{url} => $to{url}\n";
+}
+
+sub sync {
+  my %from = %{$_[0]};
+  my %to = %{$_[1]};
+
+  # Safe to initialize automatically if destination is empty and has no sync source already
+  init(\%from, \%to) unless $to{'rev'} or defined $to{'sync-from-url'};
+
+  print "Sync $from{url} => $to{url}\n";
+  my @args = ("svnsync", "sync", $to{url});
+  system(@args) == 0 or die("Sync failed!");
+}
+
+sub pair {
+  my %a = (url => $_[0]);
+  my %b = (url => $_[1]);
+
+  print "Got pair $a{url}, $b{url}\n";
+
+  info(\%a);
+  rev0(\%a);
+  info(\%b);
+  rev0(\%b);
+
+  #use Data::Dumper;
+  #print "A:", Dumper(\%a);
+  #print "B:", Dumper(\%b);
+
+  print "UUID differs $a{uuid} to $b{uuid} so sync disallowed\n" and return unless $a{uuid} eq $b{uuid};
+  print "First repo is busy\n" and return if isbusy \%a;
+  print "Second repo is busy\n" and return if isbusy \%b;
+
+  if ($a{rev} > $b{rev}) {
+    sync(\%a, \%b);
+  } elsif ($a{rev} < $b{rev}) {
+    sync(\%b, \%a);
+  } else {
+    print "Repositories are equal\n";
+    return;
+  }
+}
+
+sub parentPair {
+  my ($purla, $purlb) = @_;
+
+  # Read Collection of Repositories XML from both and attempt to sync those that match in name, log warning for missing on either
+
+  # Requires a testing package
+  #use WWW::Curl;
+
+  # This script already depends on shell so unless we find an svnsync API we can use `curl`
+  # A java+svnkit script would be an alternative if long running shells cause issues
+
+  return 0;
+}
+
+sub forever {
+  # maybe repeating this procedure is the responsibility of docker scheduling or replication controllers?
+}
+
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime();
+print "This might be GMT not UTC:\n" if $isdst;
+printf("---- reposync start %04d-%02d-%02dT%02d:%02d:%02dZ ----\n", $year+1900, $mon+1, $mday, $hour, $min, $sec);
+if ($a and $b) {
+  pair($a, $b);
+} else {
+  print "No args given. Reposync might use ENV and naming conventions";
+  use Data::Dumper;
+  print Dumper(\%ENV);
+}

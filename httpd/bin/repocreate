@@ -8,12 +8,13 @@ my %o = (
 
 my $name = '';
 sub reponame {
-  die("Respository name already set to $name") if $name;
+  die("Respository name already set to $name\n") if $name;
   $name = $_[0];
 }
 
 GetOptions (\%o,
-            # allow revpropchange from this user (typically sync user)
+            # allow revpropchange if this shell expression evaluates to true
+            # for example '1' or '$USER = "syncuser"'
             "revpropchange|c=s",
             # empty to generate
             "uuid|u=s",
@@ -39,20 +40,24 @@ if (exists($o{'uuid'})) {
 if (exists($o{'revpropchange'})) {
   my $hook = "$repo/hooks/pre-revprop-change";
   open (FILE, ">> $hook") || die "Failed to open hook $hook for writing\n";
-  print FILE <<HOOK;
+  print FILE $o{'revpropchange'} ? <<HOOK
 #!/bin/sh
 REPOS="\$1"
 REV="\$2"
 USER="\$3"
 PROPNAME="\$4"
 ACTION="\$5"
-if [ "\$USER" = "$o{'revpropchange'}" ]; then exit 0; fi
+if [ $o{revpropchange} ]; then exit 0; fi
 echo "Revision property change blocked" >&2
 exit 1
 HOOK
+: <<HOOK;
+#!/bin/sh
+exit 0
+HOOK
   close(FILE);
   `chmod ug+x $hook`;
-  ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Created hook that allows user '$o{'revpropchange'}' to set revprops\n";
+  ${^CHILD_ERROR_NATIVE} and die("Aborted") or print "Revprop change hook enabled, rule: $o{revpropchange}\n";
 }
 
 if (exists($o{'owner'})) {
