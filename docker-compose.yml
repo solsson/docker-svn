@@ -26,6 +26,9 @@ svnsync:
   links:
    - svnmaster
    - svnbackup
+  command:
+   - "http://svnmaster/svn/r1"
+   - "http://svnbackup/svn/r1"
 svnservice:
   # more work needed on this one
   image: solsson/nginx-ssl-proxy

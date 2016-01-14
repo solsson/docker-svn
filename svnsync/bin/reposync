@@ -15,7 +15,7 @@ my $b;
 
 sub reponame {
   if ($b) {
-    die('Maximum 2 repositories supported');
+    die("Maximum 2 repositories supported, had '$a' and '$b' but got '$_[0]'");
   } elsif ($a) {
     $b = $_[0];
   } else {
