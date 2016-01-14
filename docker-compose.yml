@@ -12,15 +12,13 @@ devhelp:
 svnmaster:
   build: ./httpd
   ports:
-   - "30001:80"
+   - 80
 svnbackup:
   build: ./httpd
   ports:
-   - "30002:80"
+   - 80
 svnsync:
   build: ./svnsync
-  ports:
-   - "30010:80"
   links:
    - svnmaster
    - svnbackup
