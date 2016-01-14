@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-SYNCWAIT="1"
+failures=0
+SYNCWAIT="0"
 
 # Failed to execute custom commands with docker-compose so we need to know container name for exec
 # This might be a REST service some day
@@ -47,11 +48,16 @@ sleep $SYNCWAIT && echo "# Sync job happens again..."
 docker-compose up svnsync
 
 echo "# Despite the dying containers our data should be on the master..."
-svn info "http://$(docker-compose port svnmaster 80)/svn/r1/" | grep "Revision"
+svn log -c 1 "http://$(docker-compose port svnmaster 80)/svn/r1/" || (( failures += 1 ))
 echo "# ... and the slave ..."
-svn info "http://$(docker-compose port svnbackup 80)/svn/r1/" | grep "Revision"
+svn log -c 1 "http://$(docker-compose port svnbackup 80)/svn/r1/" || (( failures += 1 ))
 
 echo "# Destoying testbed..."
 docker-compose kill && docker-compose rm -f
 
-echo "# Test completed"
+if [ $failures -gt 0 ]; then
+  echo "# There were assertion failures!";
+else
+  echo "# Test completed"
+fi
+exit $failures
