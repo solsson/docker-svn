@@ -5,7 +5,7 @@ use warnings;
 use SVN::Client;
 my $ctx = new SVN::Client(
   auth => [SVN::Client::get_simple_provider(),
-  SVN::Client::get_simple_prompt_provider(\&simple_prompt,2),
+  undef, #SVN::Client::get_simple_prompt_provider(\&simple_prompt,2),
   SVN::Client::get_username_provider()]
 );
 
