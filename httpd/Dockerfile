@@ -1,5 +1,5 @@
 
-FROM httpd
+FROM httpd:2.4.18
 
 ENV SVN_VERSION 1.9.3
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
