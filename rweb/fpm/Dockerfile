@@ -1,5 +1,5 @@
 
-FROM php:5-fpm
+FROM php:7-fpm
 
 RUN apt-get update && apt-get install -y \
   graphicsmagick \
