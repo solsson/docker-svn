@@ -13,14 +13,16 @@ RUN buildDeps=' \
 		bzip2 \
 		gcc \
 		libpcre++-dev \
-		libssl-dev \
 		make \
 		libsqlite3-dev \
 		libz-dev \
+    libapr1-dev \
+    libaprutil1-dev \
+    libserf-dev \
 	' \
 	set -x \
 	&& apt-get update \
-	&& apt-get install -y --no-install-recommends libsqlite3-0 \
+	&& apt-get install -y --no-install-recommends libsqlite3-0 libapr1 libserf-1-1 \
 	&& apt-get install -y --no-install-recommends $buildDeps \
 	&& rm -r /var/lib/apt/lists/* \
 	&& curl -SL "$SVN_BZ2_URL" -o subversion-$SVN_VERSION.tar.bz2 \
@@ -28,14 +30,10 @@ RUN buildDeps=' \
 	&& mkdir -p src/svn \
 	&& tar -xvf subversion-$SVN_VERSION.tar.bz2 -C src/svn --strip-components=1 \
 	&& rm subversion-$SVN_VERSION.tar.bz2* \
-	&& cd src/svn \
-	&& ./configure --help \
-&& echo "temp layer"
-RUN echo "temp layer" \
+  && cd src/svn \
+  && ./configure \
 	&& make -j"$(nproc)" \
 	&& make install \
-	&& /sbin/ldconfig \
 	&& cd ../../ \
 	&& rm -r src/svn \
-	&& apt-get purge -y --auto-remove $buildDeps \
-	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
+	&& apt-get purge -y --auto-remove $buildDeps
