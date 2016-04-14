@@ -1,4 +1,4 @@
-FROM solsson/rweb:fpm-base@sha256:701d1e7ae5147d91ebc732427ebeca85b88b4a10de54f394e2eabd39b7b3385c
+FROM solsson/rweb:fpm-base
 
 # Same build concept as in httpd,
 # but rweb should only have the svn client with http ra
