@@ -19,10 +19,11 @@ RUN buildDeps=' \
     libapr1-dev \
     libaprutil1-dev \
     libserf-dev \
+    libneon27-dev \
   ' \
   set -x \
   && apt-get update \
-  && apt-get install -y --no-install-recommends libsqlite3-0 libapr1 libserf-1-1 \
+  && apt-get install -y --no-install-recommends libsqlite3-0 libapr1 libserf-1-1 libneon27 \
   && apt-get install -y --no-install-recommends $buildDeps \
   && rm -r /var/lib/apt/lists/* \
   && curl -SL "$SVN_BZ2_URL" -o subversion-$SVN_VERSION.tar.bz2 \
