@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     graphicsmagick \
     locales \
+    zlib1g-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -14,4 +15,7 @@ RUN echo "Enable locale(s) for rweb" \
   && locale-gen en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-RUN docker-php-ext-install mbstring curl
+RUN docker-php-ext-install \
+  curl \
+  mbstring \
+  zip
