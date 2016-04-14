@@ -30,12 +30,14 @@ RUN buildDeps=' \
   && mkdir -p src/svn \
   && tar -xvf subversion-$SVN_VERSION.tar.bz2 -C src/svn --strip-components=1 \
   && rm subversion-$SVN_VERSION.tar.bz2* \
+&& echo "temp layer"
+RUN echo "temp layer" \
   && cd src/svn \
+  && ls -la /usr/include/serf-1 \
   && ./configure \
     --with-serf \
     --without-gpg-agent \
     --without-berkeley-db \
-    --without-apxs \
     --without-swig \
   && make -j"$(nproc)" \
   && make install \
