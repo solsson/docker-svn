@@ -8,3 +8,6 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install mbstring curl
+
+RUN rm /usr/local/etc/php-fpm.d/www.conf
+ADD rweb.conf /usr/local/etc/php-fpm.d/
