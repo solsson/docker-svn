@@ -19,3 +19,5 @@ RUN docker-php-ext-install \
   curl \
   mbstring \
   zip
+
+ADD conf.d/rweb-upload-size.ini /usr/local/etc/php/conf.d/
