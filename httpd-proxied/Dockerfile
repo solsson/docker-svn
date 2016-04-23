@@ -4,7 +4,7 @@ RUN sed -i 's|^#LoadModule rewrite_module|LoadModule rewrite_module|' conf/httpd
 
 RUN echo "Include conf/svn/proxied/*.conf" >> conf/httpd.conf
 
-ADD headers-auth.conf conf/svn/proxied/
+ADD proxied conf/svn/proxied
 
 # Other things we could do in this label:
 #  * Change log format to use X-Forwarded-For
