@@ -1,6 +1,6 @@
 FROM solsson/svn-httpd:latest
 
-RUN sed -i 's|^#LoadModule rewrite_module|LoadModule rewrite_module|' conf/httpd.conf
+RUN sed -i 's|^#LoadModule auth_basic_module|LoadModule auth_basic_module|' conf/httpd.conf
 
 RUN echo "Include conf/svn/proxied/*.conf" >> conf/httpd.conf
 
