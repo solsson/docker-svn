@@ -17,7 +17,7 @@ RUN buildDeps=' \
 
 RUN echo "Include conf/proxied/*.conf" >> conf/httpd.conf
 
-ADD proxied conf/proxied
+COPY proxied/* conf/proxied/
 
 # To set env from request headers we need mod_rewrite
 RUN sed -i 's|^#LoadModule rewrite_module|LoadModule rewrite_module|' conf/httpd.conf
