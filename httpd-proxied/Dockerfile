@@ -15,9 +15,9 @@ RUN buildDeps=' \
   && apxs -c -i mod_auth_env.c \
   && apt-get purge -y --auto-remove $buildDeps
 
-RUN echo "Include conf/svn/proxied/*.conf" >> conf/httpd.conf
+RUN echo "Include conf/proxied/*.conf" >> conf/httpd.conf
 
-ADD proxied conf/svn/proxied
+ADD proxied conf/proxied
 
 # To set env from request headers we need mod_rewrite
 RUN sed -i 's|^#LoadModule rewrite_module|LoadModule rewrite_module|' conf/httpd.conf
