@@ -1,4 +1,4 @@
-FROM solsson/svn-httpd:latest
+FROM solsson/svn-httpd:1.8
 
 RUN sed -i 's|^#LoadModule authn_anon_module|LoadModule authn_anon_module|' conf/httpd.conf
 
