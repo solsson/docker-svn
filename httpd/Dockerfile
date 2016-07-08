@@ -1,9 +1,9 @@
 
 FROM httpd:2.4.23
 
-ENV SVN_VERSION 1.9.3
+ENV SVN_VERSION 1.9.4
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
-ENV SVN_BZ2_SHA1 27e8df191c92095f48314a415194ec37c682cbcf
+ENV SVN_BZ2_SHA1 bc7d51fdda43bea01e1272dfe9d23d0a9d6cd11c
 
 RUN buildDeps=' \
 		ca-certificates \
