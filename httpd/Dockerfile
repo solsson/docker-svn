@@ -5,7 +5,10 @@ ENV SVN_VERSION 1.9.4
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
 ENV SVN_BZ2_SHA1 bc7d51fdda43bea01e1272dfe9d23d0a9d6cd11c
 
-RUN buildDeps=' \
+RUN depsRuntime=' \
+		libsqlite3-0 \
+	' \
+	&& depsBuild=' \
 		ca-certificates \
 		curl \
 		bzip2 \
@@ -18,8 +21,8 @@ RUN buildDeps=' \
 	' \
 	set -x \
 	&& apt-get update \
-	&& apt-get install -y --no-install-recommends libsqlite3-0 \
-	&& apt-get install -y --no-install-recommends $buildDeps \
+	&& apt-get install -y --no-install-recommends $depsRuntime \
+	&& apt-get install -y --no-install-recommends $depsBuild \
 	&& rm -r /var/lib/apt/lists/* \
 	&& curl -SL "$SVN_BZ2_URL" -o subversion-$SVN_VERSION.tar.bz2 \
 	&& echo "$SVN_BZ2_SHA1 subversion-$SVN_VERSION.tar.bz2" | sha1sum -c - \
@@ -33,7 +36,7 @@ RUN buildDeps=' \
 	&& /sbin/ldconfig \
 	&& cd ../../ \
 	&& rm -r src/svn \
-	&& apt-get purge -y --auto-remove $buildDeps \
+	&& apt-get purge -y --auto-remove $depsBuild \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
 COPY conf/* conf/svn/
