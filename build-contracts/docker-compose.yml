@@ -10,3 +10,13 @@ cgidev:
   # manual testing on curl http://$(docker-compose port svn 80)/svn/
   ports:
   - "80"
+test1:
+  build: ../debian-svnclient
+  labels:
+    com.yolean.build-contract: "*"
+  links:
+    - cgidev:svn
+  volumes:
+    - ./test1:/test1
+  entrypoint:
+    - /test1/test1.sh
