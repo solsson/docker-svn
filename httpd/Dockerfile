@@ -42,6 +42,8 @@ RUN depsRuntime=' \
 COPY conf conf/svn
 
 COPY bin/* admin-cgi/
-RUN ln -s admin-cgi/repocreate /usr/local/bin/repocreate
+RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
+# TODO
+ENV CGI_ADMIN_ACCESS "/.*/"
 
 VOLUME /svn
