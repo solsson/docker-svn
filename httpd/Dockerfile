@@ -39,8 +39,9 @@ RUN depsRuntime=' \
 	&& apt-get purge -y --auto-remove $depsBuild \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
-COPY conf/* conf/svn/
+COPY conf conf/svn
 
-COPY bin/* /usr/local/bin/
+COPY bin/* admin-cgi/
+RUN ln -s admin-cgi/repocreate /usr/local/bin/repocreate
 
 VOLUME /svn
