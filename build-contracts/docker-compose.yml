@@ -1,0 +1,12 @@
+# Testing: curl http://$(docker-compose port cgidev 80)/admin/repocreate -d owner=daemon -d reponame=test
+# Note that this depends on fs rights to the /svn volume
+# You may need docker-compose exec cgidev chmod a+w /svn
+cgidev:
+  build: ../httpd
+  volumes:
+  - ../httpd/bin:/usr/local/apache2/admin-cgi/
+  expose:
+  - "80"
+  # manual testing on curl http://$(docker-compose port svn 80)/svn/
+  ports:
+  - "80"

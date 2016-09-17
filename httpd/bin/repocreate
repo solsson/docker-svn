@@ -7,7 +7,7 @@ my %o = (
 
 my $name = '';
 
-if (not $ENV{SERVER_SOFTWARE}) {
+if (not $ENV{REQUEST_METHOD}) {
   use Getopt::Long;
 
   # ugly avoid multiple unnamed args
@@ -30,17 +30,19 @@ if (not $ENV{SERVER_SOFTWARE}) {
               )
   or die("Error in command line arguments\n");
 } else {
-  use CGI;
   # curl -d reponame=test1 -d owner=daemon http://test@svn/cgi-bin/repocreate
+  use CGI::Minimal;
+  my $cgi = CGI::Minimal->new;
+  die("truncated, woot?") if ($cgi->truncated);
   print "Content-type: text/plain\n\n";
-  die("Request method isn't POST") unless (CGI->request_method() eq 'POST');
-  my $q = CGI->new;
-  my $rest = $q->Vars;
-  $name = $rest->{'reponame'};
-  $o{'revpropchange'} = $rest->{'revpropchange'};
-  $o{'uuid'} = $rest->{'uuid'};
-  $o{'owner'} = $rest->{'owner'};
-  $o{'group'} = $rest->{'group'};
+  die("Request method isn't POST") unless ($ENV{REQUEST_METHOD} eq 'POST');
+  $name = $cgi->param('reponame');
+  my @optionkeys = qw(revpropchange uuid owner group);
+  foreach my $key (@optionkeys) {
+    if ($cgi->param($key)) {
+      $o{$key} = $cgi->param($key);
+    }
+  }
 }
 
 die("Repository name is a required argument") if not $name;
