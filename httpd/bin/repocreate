@@ -30,7 +30,8 @@ if (not $ENV{SERVER_SOFTWARE}) {
               )
   or die("Error in command line arguments\n");
 } else {
-  use CGI;
+  use CGI::Minimal;
+  my $cgi = CGI::Minimal->new;
   # curl -d reponame=test1 -d owner=daemon http://test@svn/cgi-bin/repocreate
   print "Content-type: text/plain\n\n";
   die("Request method isn't POST") unless (CGI->request_method() eq 'POST');

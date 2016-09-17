@@ -41,6 +41,8 @@ RUN depsRuntime=' \
 
 COPY conf conf/svn
 
+# TODO is there a licensing aspect on copy from project source instead of downloading from docker build?
+COPY site_perl /usr/local/lib/site_perl
 COPY bin/* admin-cgi/
 RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 # TODO
