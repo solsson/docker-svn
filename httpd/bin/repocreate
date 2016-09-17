@@ -1,30 +1,48 @@
 #!/usr/bin/perl -w
 use strict;
 
-use Getopt::Long;
+use CGI;
+
 my %o = (
   'parent' => '/svn'
 );
 
 my $name = '';
-sub reponame {
-  die("Respository name already set to $name\n") if $name;
-  $name = $_[0];
-}
 
-GetOptions (\%o,
-            # allow revpropchange if this shell expression evaluates to true
-            # for example '1' or '$USER = "syncuser"'
-            "revpropchange|c=s",
-            # empty to generate
-            "uuid|u=s",
-            # chown repo to this user
-            "owner|o=s",
-            # chgrp repo to this user
-            "group|g=s",
-            '<>' => \&reponame
-            )
-or die("Error in command line arguments\n");
+if (not $ENV{SERVER_SOFTWARE}) {
+  use Getopt::Long;
+
+  # ugly avoid multiple unnamed args
+  sub reponame {
+    die("Respository name already set to $name\n") if $name;
+    $name = $_[0];
+  }
+
+  GetOptions (\%o,
+              # allow revpropchange if this shell expression evaluates to true
+              # for example '1' or '$USER = "syncuser"'
+              "revpropchange|c=s",
+              # empty to generate
+              "uuid|u=s",
+              # chown repo to this user
+              "owner|o=s",
+              # chgrp repo to this user
+              "group|g=s",
+              '<>' => \&reponame
+              )
+  or die("Error in command line arguments\n");
+} else {
+  # curl -d reponame=test1 -d owner=daemon http://test@svn/cgi-bin/repocreate
+  print "Content-type: text/plain\n\n";
+  die("Request method isn't POST") unless (CGI->request_method() eq 'POST');
+  my $q = CGI->new;
+  my $rest = $q->Vars;
+  $name = $rest->{'reponame'};
+  $o{'revpropchange'} = $rest->{'revpropchange'};
+  $o{'uuid'} = $rest->{'uuid'};
+  $o{'owner'} = $rest->{'owner'};
+  $o{'group'} = $rest->{'group'};
+}
 
 die("Repository name is a required argument") if not $name;
 
