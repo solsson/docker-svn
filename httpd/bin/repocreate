@@ -37,10 +37,12 @@ if (not $ENV{REQUEST_METHOD}) {
   print "Content-type: text/plain\n\n";
   die("Request method isn't POST") unless ($ENV{REQUEST_METHOD} eq 'POST');
   $name = $cgi->param('reponame');
-  $o{'revpropchange'} = $cgi->param('revpropchange');
-  $o{'uuid'} = $cgi->param('uuid');
-  $o{'owner'} = $cgi->param('owner');
-  $o{'group'} = $cgi->param('group');
+  my @optionkeys = qw(revpropchange uuid owner group);
+  foreach my $key (@optionkeys) {
+    if ($cgi->param($key)) {
+      $o{$key} = $cgi->param($key);
+    }
+  }
 }
 
 die("Repository name is a required argument") if not $name;
