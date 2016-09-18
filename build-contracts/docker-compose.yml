@@ -5,6 +5,7 @@ cgidev:
   build: ../httpd
   volumes:
   - ../httpd/bin:/usr/local/apache2/admin-cgi/
+  - ./svn:/svn
   expose:
   - "80"
   # manual testing on curl http://$(docker-compose port svn 80)/svn/
