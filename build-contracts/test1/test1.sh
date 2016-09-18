@@ -14,5 +14,5 @@ curl $RETRY -f http://svn/svn/test1/ -I || exit 1
 curl http://svn_noadminrest/admin/repocreate -I | grep -q "500" || exit 1
 
 echo "Really successful? Response codes from the cgi script are very uninformative. See logs until die->500 is fixed, at least."
-echo "During development the test script will hang here for 1 hour"
-sleep 3600
+#echo "During development the test script will hang here for 1 hour"
+#sleep 3600

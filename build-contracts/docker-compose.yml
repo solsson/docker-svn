@@ -1,18 +1,18 @@
-# Testing: curl http://$(docker-compose port cgidev 80)/admin/repocreate -d owner=daemon -d reponame=test
-# Note that this depends on fs rights to the /svn volume
-# You may need docker-compose exec cgidev chmod a+w /svn
-cgidev:
+# Testing: curl http://$(docker-compose port svn 80)/admin/repocreate -d reponame=test
+svn:
   build: ../httpd
   volumes:
-  - ../httpd/bin:/usr/local/apache2/admin-cgi/
-  - ./svn:/svn
+  # work around permission issue with crate as www/daemon user when volume isn't mounted
+    - ./svn:/svn
+  # cgi development without restart
+  #  - ../httpd/bin:/usr/local/apache2/admin-cgi/
   environment:
     ADMIN_REST_ACCESS: "true"
   expose:
-  - "80"
+    - "80"
   # manual testing on curl http://$(docker-compose port svn 80)/svn/
-  ports:
-  - "80"
+  #ports:
+  #  - "80"
 svn_noadminrest:
   build: ../httpd
   expose:
@@ -22,7 +22,7 @@ test1:
   labels:
     com.yolean.build-contract: "*"
   links:
-    - cgidev:svn
+    - svn
     - svn_noadminrest
   volumes:
     - ./test1:/test1
