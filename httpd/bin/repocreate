@@ -34,6 +34,9 @@ if (not $ENV{REQUEST_METHOD}) {
   use CGI::Minimal;
   my $cgi = CGI::Minimal->new;
   die("truncated, woot?") if ($cgi->truncated);
+  if (!$ENV{'ADMIN_REST_ACCESS'}) {
+    die('REST admin not allowed');
+  }
   print "Content-type: text/plain\n\n";
   die("Request method isn't POST") unless ($ENV{REQUEST_METHOD} eq 'POST');
   $name = $cgi->param('reponame');

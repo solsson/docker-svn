@@ -6,17 +6,24 @@ cgidev:
   volumes:
   - ../httpd/bin:/usr/local/apache2/admin-cgi/
   - ./svn:/svn
+  environment:
+    ADMIN_REST_ACCESS: "true"
   expose:
   - "80"
   # manual testing on curl http://$(docker-compose port svn 80)/svn/
   ports:
   - "80"
+svn_noadminrest:
+  build: ../httpd
+  expose:
+    - "80"
 test1:
   build: ../debian-svnclient
   labels:
     com.yolean.build-contract: "*"
   links:
     - cgidev:svn
+    - svn_noadminrest
   volumes:
     - ./test1:/test1
   entrypoint:

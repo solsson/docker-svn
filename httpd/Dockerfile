@@ -47,7 +47,6 @@ COPY bin/* admin-cgi/
 RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 
 # Set to non-empty to enable /admin/repocreate http endpoint
-# TODO
-#ENV ADMIN_REST_ACCESS ""
+ENV ADMIN_REST_ACCESS ""
 
 VOLUME /svn
