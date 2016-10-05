@@ -51,3 +51,5 @@ ENV ADMIN_REST_ACCESS ""
 
 # httpd config has hard coded /svn for parent path, but if we declare a Volume here you can't prepare repositories in downstream images
 #VOLUME /svn
+
+RUN mkdir /svn && chown daemon /svn
