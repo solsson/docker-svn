@@ -1,11 +1,6 @@
 # Testing: curl http://$(docker-compose port svn 80)/admin/repocreate -d reponame=test
 svn:
   build: ../httpd
-  volumes:
-  # work around permission issue with crate as www/daemon user when volume isn't mounted
-    - ./svn:/svn
-  # cgi development without restart
-  #  - ../httpd/bin:/usr/local/apache2/admin-cgi/
   environment:
     ADMIN_REST_ACCESS: "true"
   expose:
