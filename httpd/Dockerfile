@@ -49,4 +49,7 @@ RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 # Set to non-empty to enable /admin/repocreate http endpoint
 ENV ADMIN_REST_ACCESS ""
 
-VOLUME /svn
+# httpd config has hard coded /svn for parent path, but if we declare a Volume here you can't prepare repositories in downstream images
+#VOLUME /svn
+
+RUN mkdir /svn && chown daemon /svn
