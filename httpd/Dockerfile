@@ -1,9 +1,9 @@
 
 FROM httpd:2.4.23
 
-ENV SVN_VERSION 1.9.4
+ENV SVN_VERSION 1.8.16
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
-ENV SVN_BZ2_SHA1 bc7d51fdda43bea01e1272dfe9d23d0a9d6cd11c
+ENV SVN_BZ2_SHA1 9596643a2728c55a4e54ff38608fde09b27fa494
 
 RUN depsRuntime=' \
 		libsqlite3-0 \
@@ -49,4 +49,7 @@ RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 # Set to non-empty to enable /admin/repocreate http endpoint
 ENV ADMIN_REST_ACCESS ""
 
-VOLUME /svn
+# httpd config has hard coded /svn for parent path, but if we declare a Volume here you can't prepare repositories in downstream images
+#VOLUME /svn
+
+RUN mkdir /svn && chown daemon /svn
