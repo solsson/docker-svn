@@ -8,10 +8,10 @@ ENV SVN_BZ2_SHA1 9596643a2728c55a4e54ff38608fde09b27fa494
 
 RUN depsRuntime=' \
 		libsqlite3-0 \
+		curl \
 	' \
 	&& depsBuild=' \
 		ca-certificates \
-		curl \
 		bzip2 \
 		gcc \
 		libpcre++-dev \
