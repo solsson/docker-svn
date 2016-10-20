@@ -3,6 +3,7 @@ services:
   # Testing: curl http://$(docker-compose port svn 80)/admin/repocreate -d reponame=test
   svn:
     build: ../httpd
+    image: solsson/svn-httpd
     environment:
       ADMIN_REST_ACCESS: "true"
     expose:
@@ -14,9 +15,34 @@ services:
     build: ../httpd
     expose:
       - "80"
+
+  fpm-svn:
+    build: ../rweb/fpm-svn
+    image: solsson/fpm-svn
+    entrypoint:
+      - echo
+      - "This was just a build job. Exiting."
+
+  rweb-httpd:
+    depends_on:
+      - svn
+    build: ../rweb/httpd
+    image: solsson/rweb-httpd
+    expose:
+      - "80"
+    links:
+      - rweb-fpm:rweb
+  rweb-fpm:
+    depends_on:
+      - fpm-svn
+    build: ../rweb/fpm
+    image: solsson/rweb-fpm
+    expose:
+      - "9000"
+
   debian-svnclient:
     build: ../debian-svnclient
-    image: debian-svnclient
+    image: solsson/debian-svnclient
   test1:
     depends_on:
       - debian-svnclient

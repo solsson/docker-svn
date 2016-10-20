@@ -1,5 +1,6 @@
 
-FROM httpd:2.4.23
+# https://github.com/docker-library/repo-info/blob/master/repos/httpd/tag-details.md
+FROM httpd@sha256:aa0711c4fc25264ce59b5f9315b555ba1252ad0fbd0e290634b693df2045a072
 
 ENV SVN_VERSION 1.8.16
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
