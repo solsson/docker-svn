@@ -1,20 +1,16 @@
 version: '2'
 services:
 
-  # Testing: curl http://$(docker-compose port svn 80)/admin/repocreate -d reponame=test
   svn:
     build: ../httpd
     image: solsson/svn-httpd
-    environment:
-      ADMIN_REST_ACCESS: "true"
     expose:
       - "80"
-    # manual testing on curl http://$(docker-compose port svn 80)/svn/
-    #ports:
-    #  - "80"
 
-  svn_noadminrest:
+  svn_adminrest:
     build: ../httpd
+    environment:
+      ADMIN_REST_ACCESS: "true"
     expose:
       - "80"
 
@@ -42,6 +38,7 @@ services:
       - "80"
     environment:
       ADMIN_REST_ACCESS: "true"
+      AUTHN: "anon"
     links:
       - rweb:rweb
 
@@ -66,4 +63,4 @@ services:
       com.yolean.build-contract: "*"
     links:
       - svn
-      - svn_noadminrest
+      - svn_adminrest
