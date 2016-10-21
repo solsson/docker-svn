@@ -9,8 +9,8 @@ TESTID=$1
 
 echo "Creating test repository $TESTID"
 
-curl $RETRY -f http://svn/svn/ -I || exit 1
+curl $RETRY -f http://repocreate@svn/svn/ -I || exit 1
 
-curl $RETRY -f http://svn/admin/repocreate -d reponame=$TESTID || exit 1
+curl $RETRY -f http://repocreate@svn/admin/repocreate -d reponame=$TESTID || exit 1
 
-curl $RETRY -f http://svn/svn/$TESTID/ -I || exit 1
+curl $RETRY -f http://repocreate@svn/svn/$TESTID/ -I || exit 1
