@@ -28,6 +28,8 @@ services:
     image: solsson/rweb-fpm
     expose:
       - "9000"
+    links:
+      - rweb-httpd:svn
 
   rweb-httpd:
     depends_on:
@@ -39,8 +41,6 @@ services:
     environment:
       ADMIN_REST_ACCESS: "true"
       AUTHN: "anon"
-    links:
-      - rweb:rweb
 
   rwebtest:
     build: ./rwebtest
