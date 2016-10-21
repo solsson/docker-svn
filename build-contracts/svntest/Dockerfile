@@ -3,4 +3,7 @@ FROM solsson/debian-svnclient
 
 COPY . /test/
 
-ENTRYPOINT /test/test1.sh
+WORKDIR /test
+
+ENTRYPOINT /bin/bash
+CMD all.sh

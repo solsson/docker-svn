@@ -1,5 +1,6 @@
 version: '2'
 services:
+
   # Testing: curl http://$(docker-compose port svn 80)/admin/repocreate -d reponame=test
   svn:
     build: ../httpd
@@ -11,6 +12,7 @@ services:
     # manual testing on curl http://$(docker-compose port svn 80)/svn/
     #ports:
     #  - "80"
+
   svn_noadminrest:
     build: ../httpd
     expose:
@@ -32,6 +34,7 @@ services:
       - "80"
     links:
       - rweb-fpm:rweb
+
   rweb-fpm:
     depends_on:
       - fpm-svn
@@ -40,13 +43,21 @@ services:
     expose:
       - "9000"
 
+  rwebtest:
+    build: ./rwebtest
+    labels:
+      com.yolean.build-contract: "*"
+    links:
+      - rweb-httpd:rweb
+
   debian-svnclient:
     build: ../debian-svnclient
     image: solsson/debian-svnclient
-  test1:
+
+  svntest:
     depends_on:
       - debian-svnclient
-    build: ./test1
+    build: ./svntest
     labels:
       com.yolean.build-contract: "*"
     links:
