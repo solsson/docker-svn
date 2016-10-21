@@ -25,17 +25,7 @@ services:
       - echo
       - "This was just a build job. Exiting."
 
-  rweb-httpd:
-    depends_on:
-      - svn
-    build: ../rweb/httpd
-    image: solsson/rweb-httpd
-    expose:
-      - "80"
-    links:
-      - rweb-fpm:rweb
-
-  rweb-fpm:
+  rweb:
     depends_on:
       - fpm-svn
     build: ../rweb/fpm
@@ -43,12 +33,26 @@ services:
     expose:
       - "9000"
 
+  rweb-httpd:
+    depends_on:
+      - svn
+    build: ../rweb/httpd
+    image: solsson/rweb-httpd
+    expose:
+      - "80"
+    environment:
+      ADMIN_REST_ACCESS: "true"
+    links:
+      - rweb:rweb
+
   rwebtest:
     build: ./rwebtest
     labels:
       com.yolean.build-contract: "*"
+    environment:
+      DEBUG: "true"
     links:
-      - rweb-httpd:rweb
+      - rweb-httpd:svn
 
   debian-svnclient:
     build: ../debian-svnclient

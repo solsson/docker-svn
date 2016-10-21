@@ -5,5 +5,4 @@ COPY . /test/
 
 WORKDIR /test
 
-ENTRYPOINT /bin/bash
-CMD all.sh
+CMD ./all.sh
