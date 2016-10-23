@@ -1,4 +1,7 @@
 #!/bin/bash
+set -e
+[[ -z "$DEBUG" ]] || set -x
+
 [ -z "$RETRY" ] & RETRY="--retry 3 --retry-delay 5"
 
 curl $RETRY -f http://svn_adminrest/svn/ -I || exit 1
