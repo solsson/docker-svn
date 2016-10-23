@@ -1,0 +1,31 @@
+svnmaster:
+  build: ../httpd
+  ports:
+   - 80
+  environment:
+    ADMIN_REST_ACCESS: "true"
+svnbackup:
+  build: ../httpd
+  ports:
+   - 80
+  environment:
+    ADMIN_REST_ACCESS: "true"
+testsetup:
+  image: solsson/debian-svnclient
+  links:
+    - svnmaster
+    - svnbackup
+  command:
+    - /bin/bash
+    - -c
+    - "curl -f http://syncsetup@svnmaster/admin/repocreate -d reponame=r1&c=1 && curl -f http://syncsetup@svnbackup/admin/repocreate -d reponame=r1&c=1"
+svnsync:
+  build: ../svnsync
+  links:
+   - svnmaster
+   - svnbackup
+  command:
+   - "http://svnmaster/svn/r1"
+   - "http://svnbackup/svn/r1"
+  labels:
+    com.yolean.build-contract: "*"

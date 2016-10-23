@@ -1,5 +1,6 @@
 
-FROM httpd:2.4.23
+# https://github.com/docker-library/repo-info/blob/master/repos/httpd/tag-details.md
+FROM httpd@sha256:aa0711c4fc25264ce59b5f9315b555ba1252ad0fbd0e290634b693df2045a072
 
 ENV SVN_VERSION 1.8.16
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
@@ -7,10 +8,10 @@ ENV SVN_BZ2_SHA1 9596643a2728c55a4e54ff38608fde09b27fa494
 
 RUN depsRuntime=' \
 		libsqlite3-0 \
+		curl \
 	' \
 	&& depsBuild=' \
 		ca-certificates \
-		curl \
 		bzip2 \
 		gcc \
 		libpcre++-dev \
@@ -48,6 +49,15 @@ RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 
 # Set to non-empty to enable /admin/repocreate http endpoint
 ENV ADMIN_REST_ACCESS ""
+# Set to "anon" to pick up username (for commit log etc) from BASIC auth header without verification of credentials
+ENV AUTHN ""
+# Set to "svn" to enable mod_authz_svn, but note that no AuthzSVNAccessFile etc will be configured
+ENV AUTHZ ""
+# Set to "fpm" to enable rweb conf
+ENV RWEB ""
+
+# Allow IfDefine based on container runtime env
+RUN sed -i 's/-DFOREGROUND/-DFOREGROUND -DAUTHN=$AUTHN -DAUTHZ=$AUTHZ -DRWEB=$RWEB/' /usr/local/bin/httpd-foreground
 
 # httpd config has hard coded /svn for parent path, but if we declare a Volume here you can't prepare repositories in downstream images
 #VOLUME /svn

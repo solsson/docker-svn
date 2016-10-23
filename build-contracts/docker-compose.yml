@@ -1,28 +1,66 @@
 version: '2'
 services:
-  # Testing: curl http://$(docker-compose port svn 80)/admin/repocreate -d reponame=test
+
   svn:
+    build: ../httpd
+    image: solsson/svn-httpd
+    expose:
+      - "80"
+
+  svn_adminrest:
     build: ../httpd
     environment:
       ADMIN_REST_ACCESS: "true"
     expose:
       - "80"
-    # manual testing on curl http://$(docker-compose port svn 80)/svn/
-    #ports:
-    #  - "80"
-  svn_noadminrest:
-    build: ../httpd
+
+  fpm-svn:
+    build: ../rweb/fpm-svn
+    image: solsson/fpm-svn
+    entrypoint:
+      - echo
+      - "This was just a build job. Exiting."
+
+  rweb:
+    depends_on:
+      - fpm-svn
+    build: ../rweb/fpm
+    image: solsson/rweb-fpm
+    expose:
+      - "9000"
+    links:
+      - rweb-httpd:svn
+
+  rweb-httpd:
+    depends_on:
+      - svn
+    build: ../rweb/httpd
+    image: solsson/rweb-httpd
     expose:
       - "80"
+    environment:
+      ADMIN_REST_ACCESS: "true"
+      AUTHN: "anon"
+
+  rwebtest:
+    build: ./rwebtest
+    labels:
+      com.yolean.build-contract: "*"
+    environment:
+      DEBUG: "true"
+    links:
+      - rweb-httpd:svn
+
   debian-svnclient:
     build: ../debian-svnclient
-    image: debian-svnclient
-  test1:
+    image: solsson/debian-svnclient
+
+  svntest:
     depends_on:
       - debian-svnclient
-    build: ./test1
+    build: ./svntest
     labels:
       com.yolean.build-contract: "*"
     links:
       - svn
-      - svn_noadminrest
+      - svn_adminrest

@@ -1,4 +1,4 @@
-FROM solsson/rweb:fpm-base
+FROM php:7.0.12-fpm
 
 # Same build concept as in httpd,
 # but rweb should only have the svn client with http ra
