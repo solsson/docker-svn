@@ -14,6 +14,14 @@ services:
     expose:
       - "80"
 
+  svn_authz:
+    build: ../httpd
+    environment:
+      ADMIN_REST_ACCESS: "true"
+      AUTHZ: "admrepo"
+    expose:
+      - "80"
+
   fpm-svn:
     build: ../rweb/fpm-svn
     image: solsson/fpm-svn
