@@ -2,9 +2,9 @@ FROM solsson/svn-httpd
 
 ENV RWEB=fpm
 
-ENV RWEB_VERSION=1.6.0
+ENV RWEB_VERSION=1.6.1
 ENV RWEB_TGZ_URL=https://github.com/Reposoft/rweb/archive/v$RWEB_VERSION.tar.gz
-ENV RWEB_TGZ_SHA1=c3c7ddb747e0f91130ded4cc25cb26d894a05bd5
+ENV RWEB_TGZ_SHA1=6efa46f6cb7d3cac573a421f6526fa4c8df56979
 
 RUN echo "Downloading rweb source..." \
   && curl -SLk "$RWEB_TGZ_URL" -o /usr/src/rweb-$RWEB_VERSION.tar.gz \
