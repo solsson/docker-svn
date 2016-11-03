@@ -51,7 +51,7 @@ RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 ENV ADMIN_REST_ACCESS ""
 # Set to "anon" to pick up username (for commit log etc) from BASIC auth header without verification of credentials
 ENV AUTHN ""
-# Set to "svn" to enable mod_authz_svn, but note that no AuthzSVNAccessFile etc will be configured
+# Set to "svn"/"inrepo"/"admrepo", see conf/authz/options.conf
 ENV AUTHZ ""
 # Set to "fpm" to enable rweb conf
 ENV RWEB ""

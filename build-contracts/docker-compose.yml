@@ -18,7 +18,7 @@ services:
     build: ../httpd
     environment:
       ADMIN_REST_ACCESS: "true"
-      AUTHZ: "admin"
+      AUTHZ: "admrepo"
     expose:
       - "80"
 
