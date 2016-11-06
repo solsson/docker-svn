@@ -16,7 +16,7 @@ Our next best bet would be something like [IPFS](https://ipfs.io/), but we're in
 Runtime configuration:
  * `ADMIN_REST_ACCESS` non-empty to enable `/admin/repocreate` REST endpoint
  * `AUTHN`=`anon` enables [mod_auth_anon] so that usernames from reverse proxy end up in svn logs
- * `AUTHZ`=`svn` enables [mod_autnz_svn], but without any directives to activate it, or the actual access control lists
+ * `AUTHZ`=`svn` enables [mod_autnz_svn] with path `/svn/aunhz`
  * `RWEB`=`fpm` is used from `solsson/rweb-httpd` (see below) to enable rweb config directives
 
 ### The `/r` Location alongside `/svn`
@@ -24,8 +24,6 @@ Runtime configuration:
 For content hosting you may want to keep URLs backend-neutral.
 For that purpose this image will expose `/r` as read-only variant of `/svn`.
 This is done only if `AUTHN`=`anon`, where it's up to the reverse proxy to expose `/r` or not.
-Caveats include confusion (two URLs for everything) and need for duplicated access control
-(which is why the Location is disabled with `AUTHNZ=svn`).
 Also we only enable this with `RWEB`.
 
 ### `solsson/svn-httpd:proxied`
@@ -53,5 +51,5 @@ Deprecated. Omit the tag and get the full rweb instead.
 ## Building
 
 ```
-docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/:/source solsson/build-contract-push
+docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/:/source solsson/build-contract
 ```
