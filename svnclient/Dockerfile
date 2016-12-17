@@ -7,6 +7,8 @@ ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
 RUN depsRuntime=' \
 		libsqlite3-0 \
 		curl \
+		libapr1 \
+		libaprutil1 \
 	' \
 	&& depsBuild=' \
 		ca-certificates \
@@ -17,6 +19,8 @@ RUN depsRuntime=' \
 		make \
 		libsqlite3-dev \
 		libz-dev \
+		libapr1-dev \
+		libaprutil1-dev \
 	' \
 	set -x \
 	&& apt-get update \
