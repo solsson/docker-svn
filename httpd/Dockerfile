@@ -2,9 +2,9 @@
 # https://github.com/docker-library/repo-info/blob/master/repos/httpd/tag-details.md
 FROM httpd@sha256:5b4a3c85b4b874e84174ee7e78a59920818aa39903f6a28a47b9278f576b4a4d
 
-ENV SVN_VERSION 1.8.16
+ENV SVN_VERSION 1.8.17
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
-ENV SVN_BZ2_SHA1 9596643a2728c55a4e54ff38608fde09b27fa494
+ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
 
 RUN depsRuntime=' \
 		libsqlite3-0 \
