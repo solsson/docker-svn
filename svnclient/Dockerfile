@@ -44,3 +44,5 @@ RUN depsRuntime=' \
 	&& cd ../../ \
 	&& rm -r src/svn \
 	&& apt-get purge -y --auto-remove $depsBuild
+
+ENTRYPOINT ["svn"]
