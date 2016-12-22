@@ -6,6 +6,7 @@ ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
 
 RUN depsRuntime=' \
 		libsqlite3-0 \
+		ca-certificates \
 		curl \
 		libapr1 \
 		libaprutil1 \
@@ -13,7 +14,6 @@ RUN depsRuntime=' \
 		libserf-1-1 \
 	' \
 	&& depsBuild=' \
-		ca-certificates \
 		bzip2 \
 		gcc \
 		libpcre++-dev \

@@ -48,6 +48,10 @@ Tries to keep two repositories with same uuid in sync.
 
 Deprecated. Omit the tag and get the full rweb instead.
 
+## [solsson/svnclient](https://hub.docker.com/r/solsson/svnclient/)
+
+Stable Debian with latest subversion release. Useful because apt repositories are far behind.
+
 ## Building
 
 ```
