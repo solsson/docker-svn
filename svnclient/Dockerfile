@@ -9,6 +9,8 @@ RUN depsRuntime=' \
 		curl \
 		libapr1 \
 		libaprutil1 \
+		libneon27 \
+		libserf-1-1 \
 	' \
 	&& depsBuild=' \
 		ca-certificates \
@@ -21,6 +23,8 @@ RUN depsRuntime=' \
 		libz-dev \
 		libapr1-dev \
 		libaprutil1-dev \
+		libneon27-dev \
+		libserf-dev \
 	' \
 	set -x \
 	&& apt-get update \
