@@ -8,11 +8,11 @@ ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN depsRuntime=' \
+RUN depsRuntime=" \
 		libsqlite3-0 \
 		curl \
-	' \
-	&& depsBuild=' \
+	" \
+	&& depsBuild=" \
 		ca-certificates \
 		bzip2 \
 		gcc \
@@ -21,7 +21,7 @@ RUN depsRuntime=' \
 		make \
 		libsqlite3-dev \
 		libz-dev \
-	' \
+	" \
 	set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends $depsRuntime \
