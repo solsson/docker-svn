@@ -6,6 +6,8 @@ ENV SVN_VERSION 1.8.17
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
 ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN depsRuntime=' \
 		libsqlite3-0 \
 		curl \
