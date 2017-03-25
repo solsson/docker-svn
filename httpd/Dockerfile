@@ -13,7 +13,6 @@ ENV CA_CERTIFICATES_VERSION 20161130
 
 RUN depsRuntime=" \
 		libsqlite3-0 \
-		ca-certificates=$CA_CERTIFICATES_VERSION \
 		curl \
 		libserf-1-1 \
 	" \
@@ -33,7 +32,6 @@ RUN depsRuntime=" \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends $depsRuntime \
 	&& apt-get install -y --no-install-recommends $depsBuild \
-	&& rm -r /var/lib/apt/lists/* \
 	&& curl -SL "$SVN_BZ2_URL" -o subversion-$SVN_VERSION.tar.bz2 \
 	&& echo "$SVN_BZ2_SHA1 subversion-$SVN_VERSION.tar.bz2" | sha1sum -c - \
 	&& mkdir -p src/svn \
@@ -47,6 +45,8 @@ RUN depsRuntime=" \
 	&& cd ../../ \
 	&& rm -r src/svn \
 	&& apt-get purge -y --auto-remove $depsBuild \
+	&& apt-get install -y ca-certificates=$CA_CERTIFICATES_VERSION \
+	&& rm -r /var/lib/apt/lists/* \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
 COPY conf conf/svn
