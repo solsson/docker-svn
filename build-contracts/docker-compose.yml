@@ -72,3 +72,10 @@ services:
     links:
       - svn
       - svn_adminrest
+
+  httpd-svn-client:
+    build: ../httpd
+    labels:
+      - com.yolean.build-contract
+    entrypoint: svn
+    command: [info, "https://github.com/Reposoft/docker-svn"]
