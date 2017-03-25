@@ -7,14 +7,14 @@ services:
     expose:
       - "80"
 
-  svn_adminrest:
+  svn-adminrest:
     build: ../httpd
     environment:
       ADMIN_REST_ACCESS: "true"
     expose:
       - "80"
 
-  svn_authz:
+  svn-authz:
     build: ../httpd
     environment:
       ADMIN_REST_ACCESS: "true"
@@ -71,7 +71,7 @@ services:
       com.yolean.build-contract: "*"
     links:
       - svn
-      - svn_adminrest
+      - svn-adminrest
 
   httpd-curl:
     build: ../httpd
