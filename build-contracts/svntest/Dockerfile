@@ -1,5 +1,5 @@
 
-FROM solsson/debian-svnclient
+FROM solsson/svnclient
 
 COPY . /test/
 
