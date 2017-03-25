@@ -8,9 +8,13 @@ ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# we have the stretch package repo from upstream, so let's use https://packages.debian.org/stretch/ca-certificates
+ENV CA_CERTIFICATES_VERSION 20161130
+
 RUN depsRuntime=" \
 		libsqlite3-0 \
 		curl \
+		libserf-1-1 \
 	" \
 	&& depsBuild=" \
 		ca-certificates \
@@ -20,13 +24,14 @@ RUN depsRuntime=" \
 		libssl-dev=$OPENSSL_VERSION \
 		make \
 		libsqlite3-dev \
-		libz-dev \
+		zlib1g-dev \
+		libneon27-dev \
+		libserf-dev \
 	" \
 	set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends $depsRuntime \
 	&& apt-get install -y --no-install-recommends $depsBuild \
-	&& rm -r /var/lib/apt/lists/* \
 	&& curl -SL "$SVN_BZ2_URL" -o subversion-$SVN_VERSION.tar.bz2 \
 	&& echo "$SVN_BZ2_SHA1 subversion-$SVN_VERSION.tar.bz2" | sha1sum -c - \
 	&& mkdir -p src/svn \
@@ -40,6 +45,8 @@ RUN depsRuntime=" \
 	&& cd ../../ \
 	&& rm -r src/svn \
 	&& apt-get purge -y --auto-remove $depsBuild \
+	&& apt-get install -y ca-certificates=$CA_CERTIFICATES_VERSION \
+	&& rm -r /var/lib/apt/lists/* \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
 COPY conf conf/svn

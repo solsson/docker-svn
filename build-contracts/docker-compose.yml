@@ -7,14 +7,14 @@ services:
     expose:
       - "80"
 
-  svn_adminrest:
+  svn-adminrest:
     build: ../httpd
     environment:
       ADMIN_REST_ACCESS: "true"
     expose:
       - "80"
 
-  svn_authz:
+  svn-authz:
     build: ../httpd
     environment:
       ADMIN_REST_ACCESS: "true"
@@ -59,16 +59,30 @@ services:
     links:
       - rweb-httpd:svn
 
-  debian-svnclient:
-    build: ../debian-svnclient
-    image: solsson/debian-svnclient
+  svnclient:
+    build: ../svnclient
+    image: solsson/svnclient
 
   svntest:
     depends_on:
-      - debian-svnclient
+      - svnclient
     build: ./svntest
     labels:
       com.yolean.build-contract: "*"
     links:
       - svn
-      - svn_adminrest
+      - svn-adminrest
+
+  httpd-curl:
+    build: ../httpd
+    labels:
+      - com.yolean.build-contract
+    entrypoint: curl
+    command: [-I, "https://svn.apache.org/repos/asf/subversion/trunk/", "-k"]
+
+  httpd-svn-client:
+    build: ../httpd
+    labels:
+      - com.yolean.build-contract
+    entrypoint: svn
+    command: [info, "https://svn.apache.org/repos/asf/subversion/trunk/", "--trust-server-cert"]

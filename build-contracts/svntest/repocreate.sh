@@ -4,11 +4,11 @@ set -e
 
 [[ -z "$RETRY" ]] && RETRY="--retry 3 --retry-delay 5"
 
-curl $RETRY -f http://svn_adminrest/svn/ -I || exit 1
+curl $RETRY -f http://svn-adminrest/svn/ -I || exit 1
 
-curl $RETRY -f http://svn_adminrest/admin/repocreate -d reponame=test1 || exit 1
+curl $RETRY -f http://svn-adminrest/admin/repocreate -d reponame=test1 || exit 1
 
-curl $RETRY -f http://svn_adminrest/svn/test1/ -I || exit 1
+curl $RETRY -f http://svn-adminrest/svn/test1/ -I || exit 1
 
 #noaccess=$(curl $RETRY -f http://svn_noadminrest/admin/repocreate -I)
 #echo $noaccess
