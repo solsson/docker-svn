@@ -59,13 +59,13 @@ services:
     links:
       - rweb-httpd:svn
 
-  debian-svnclient:
-    build: ../debian-svnclient
-    image: solsson/debian-svnclient
+  svnclient:
+    build: ../svnclient
+    image: solsson/svnclient
 
   svntest:
     depends_on:
-      - debian-svnclient
+      - svnclient
     build: ./svntest
     labels:
       com.yolean.build-contract: "*"
