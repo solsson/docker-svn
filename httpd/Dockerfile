@@ -21,7 +21,7 @@ RUN depsRuntime=" \
 		libssl-dev=$OPENSSL_VERSION \
 		make \
 		libsqlite3-dev \
-		libz-dev \
+		zlib1g-dev \
 		libneon27-dev \
 		libserf-dev \
 	" \
