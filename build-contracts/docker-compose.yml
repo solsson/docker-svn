@@ -73,9 +73,16 @@ services:
       - svn
       - svn_adminrest
 
+  httpd-svn-curl:
+    build: ../httpd
+    labels:
+      - com.yolean.build-contract
+    entrypoint: curl
+    command: [-I, "https://svn.apache.org/repos/asf/subversion/trunk/"]
+
   httpd-svn-client:
     build: ../httpd
     labels:
       - com.yolean.build-contract
     entrypoint: svn
-    command: [info, "https://github.com/Reposoft/docker-svn"]
+    command: [info, "https://svn.apache.org/repos/asf/subversion/trunk/"]

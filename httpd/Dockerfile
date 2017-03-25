@@ -11,6 +11,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN depsRuntime=" \
 		libsqlite3-0 \
 		curl \
+		libserf-1-1 \
 	" \
 	&& depsBuild=" \
 		ca-certificates \
@@ -21,6 +22,8 @@ RUN depsRuntime=" \
 		make \
 		libsqlite3-dev \
 		libz-dev \
+		libneon27-dev \
+		libserf-dev \
 	" \
 	set -x \
 	&& apt-get update \
