@@ -8,8 +8,12 @@ ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# we have the stretch package repo from upstream, so let's use https://packages.debian.org/stretch/ca-certificates
+ENV CA_CERTIFICATES_VERSION 20161130
+
 RUN depsRuntime=" \
 		libsqlite3-0 \
+		ca-certificates=$CA_CERTIFICATES_VERSION \
 		curl \
 		libserf-1-1 \
 	" \
