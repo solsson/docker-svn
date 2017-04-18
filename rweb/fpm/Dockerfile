@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     graphicsmagick \
     locales \
     zlib1g-dev \
+    libicu52 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -26,6 +27,7 @@ RUN echo "Install php extensions for rweb" \
     curl \
     mbstring \
     zip \
+    intl \
   && apt-get purge -y --auto-remove gcc make \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
