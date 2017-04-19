@@ -1,4 +1,4 @@
-FROM php:7.1.4-fpm
+FROM php:7.1.4-fpm@sha256:ca7f850494489031c88da9b01f8221258b02ce69f9208e470fdee82861a920d6
 
 # Same build concept as in httpd,
 # but rweb should only have the svn client with http ra
