@@ -45,3 +45,5 @@ RUN echo "Downloading rweb source..." \
   && mv /usr/src/rweb/repos-plugins /opt/rweb/
 
 RUN php /opt/rweb/repos-web/lib/smarty/install.php
+
+ENV REPOS_TEMP=/tmp
