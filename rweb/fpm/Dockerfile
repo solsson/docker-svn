@@ -5,7 +5,7 @@ ENV RWEB_TGZ_URL=https://github.com/Reposoft/rweb/archive/$RWEB_VERSION.tar.gz
 ENV RWEB_TGZ_SHA1=6a8242747f271f202dff4565c9c01feb04167d6e
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    curl ca-certificates \
     libcurl3 \
     libcurl4-openssl-dev \
     graphicsmagick \
