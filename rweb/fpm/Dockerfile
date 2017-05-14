@@ -1,8 +1,8 @@
 FROM solsson/fpm-svn
 
-ENV RWEB_VERSION=v1.6.4
+ENV RWEB_VERSION=v1.7.1
 ENV RWEB_TGZ_URL=https://github.com/Reposoft/rweb/archive/$RWEB_VERSION.tar.gz
-ENV RWEB_TGZ_SHA1=6a8242747f271f202dff4565c9c01feb04167d6e
+ENV RWEB_TGZ_SHA1=338831d2e5438ba8d5b5778f36497f040ed2a745
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates \
