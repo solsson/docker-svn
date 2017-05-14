@@ -1,16 +1,17 @@
 FROM solsson/fpm-svn
 
-ENV RWEB_VERSION=v1.6.4
+ENV RWEB_VERSION=v1.7.1
 ENV RWEB_TGZ_URL=https://github.com/Reposoft/rweb/archive/$RWEB_VERSION.tar.gz
-ENV RWEB_TGZ_SHA1=6a8242747f271f202dff4565c9c01feb04167d6e
+ENV RWEB_TGZ_SHA1=338831d2e5438ba8d5b5778f36497f040ed2a745
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    curl ca-certificates \
     libcurl3 \
     libcurl4-openssl-dev \
     graphicsmagick \
     locales \
     zlib1g-dev \
+    libicu52 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -21,12 +22,13 @@ ENV LC_ALL en_US.UTF-8
 
 RUN echo "Install php extensions for rweb" \
   && apt-get update \
-  && apt-get install -y gcc make \
+  && apt-get install -y gcc make libicu-dev g++ \
   && docker-php-ext-install \
     curl \
     mbstring \
     zip \
-  && apt-get purge -y --auto-remove gcc make \
+    intl \
+  && apt-get purge -y --auto-remove gcc make libicu-dev g++ \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -43,3 +45,5 @@ RUN echo "Downloading rweb source..." \
   && mv /usr/src/rweb/repos-plugins /opt/rweb/
 
 RUN php /opt/rweb/repos-web/lib/smarty/install.php
+
+ENV REPOS_TEMP=/tmp
