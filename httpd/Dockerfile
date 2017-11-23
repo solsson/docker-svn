@@ -1,6 +1,5 @@
 
-# https://github.com/docker-library/repo-info/blob/master/repos/httpd/tag-details.md
-FROM httpd:2.4.25@sha256:4612fba4347bd87eaeecd5c522d844f26cc4065b45eef9291277497946b7a86c
+FROM solsson/httpd-stretch
 
 ENV SVN_VERSION 1.8.19
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2

@@ -1,4 +1,5 @@
-FROM debian:jessie@sha256:f7062cf040f67f0c26ff46b3b44fe036c29468a7e69d8170f37c57f2eec1261b
+# TODO use the same stretch-slim build that current ../rweb/fpm-svn gets
+FROM debian:stretch-slim@sha256:ea42520331a55094b90f6f6663211d4f5a62c5781673935fe17a4dfced777029
 
 ENV SVN_VERSION 1.8.19
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
