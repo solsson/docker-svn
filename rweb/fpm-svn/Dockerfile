@@ -3,9 +3,9 @@ FROM php:7.1.5-fpm@sha256:2256f2bd134274434814c394002b4e11802e02aa554ef197741705
 # Same build concept as in httpd,
 # but rweb should only have the svn client with http ra
 
-ENV SVN_VERSION 1.8.17
+ENV SVN_VERSION 1.8.19
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
-ENV SVN_BZ2_SHA1 0999f5e16b146f824b952a5552826b9cb5c47b13
+ENV SVN_BZ2_SHA1 51d7e5329ad86a650f8fc806eb68e581055a3fd1
 
 RUN buildDeps=' \
     ca-certificates \
