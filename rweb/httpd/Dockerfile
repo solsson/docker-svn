@@ -1,7 +1,5 @@
 FROM solsson/svn-httpd
 
-ENV RWEB=fpm
-
 ENV RWEB_VERSION=v1.7.3
 ENV RWEB_TGZ_URL=https://github.com/Reposoft/rweb/archive/$RWEB_VERSION.tar.gz
 ENV RWEB_TGZ_SHA1=ce16dd26a450fe0d18bb46aaa1cb991751e82a1c
@@ -21,3 +19,5 @@ RUN  sed -i 's|^#LoadModule rewrite_module|LoadModule rewrite_module|' conf/http
   && sed -i 's|^#LoadModule proxy_fcgi_module|LoadModule proxy_fcgi_module|' conf/httpd.conf \
   && mv /usr/src/rweb/test/conf-svn/rweb-services.conf conf/svn/rweb/services-fpm.conf \
   && echo "Include conf/svn/rweb/*.conf" >> conf/svn/httpd.conf
+
+CMD [ "-DAUTHN=", "-DAUTHZ=", "-DRWEB=fpm" ]
