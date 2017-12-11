@@ -1,5 +1,5 @@
 
-FROM solsson/httpd-stretch
+FROM solsson/httpd-stretch@sha256:5e5359fd904cf2436b6b6811523cf3f0a0bb89eeaa62c667b6d7df901f25d06e
 
 ENV SVN_VERSION 1.8.19
 ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
