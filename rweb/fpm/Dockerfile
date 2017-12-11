@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     graphicsmagick \
     locales \
     zlib1g-dev \
-    libicu52 \
+    libicu57 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

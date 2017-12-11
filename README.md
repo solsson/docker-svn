@@ -13,22 +13,24 @@ Our next best bet would be something like [IPFS](https://ipfs.io/), but we're in
 
 ## [solsson/svn-httpd](https://hub.docker.com/r/solsson/svn-httpd/)
 
-Runtime configuration:
+Runtime configuration, as environment variables:
  * `ADMIN_REST_ACCESS` non-empty to enable `/admin/repocreate` REST endpoint
- * `AUTHN`=`anon` enables [mod_auth_anon] so that usernames from reverse proxy end up in svn logs
- * `AUTHZ`=`svn` enables [mod_autnz_svn] with path `/svn/aunhz`
- * `RWEB`=`fpm` is used from `solsson/rweb-httpd` (see below) to enable rweb config directives
+
+Runtime configuration, as [CMD](https://docs.docker.com/engine/reference/builder/#cmd) override:
+ * `-DAUTHN=anon` enables [mod_auth_anon](http://httpd.apache.org/docs/current/mod/mod_authn_anon.html) so that usernames from reverse proxy end up in svn logs
+ * `-DAUTHZ=svn` enables [mod_autnz_svn](http://svnbook.red-bean.com/nightly/en/svn.serverconfig.httpd.html#svn.serverconfig.httpd.ref.mod_authz_svn) with path `/svn/aunhz`
+ * `-DRWEB=fpm` is used from `solsson/rweb-httpd` (see below) to enable rweb config directives
 
 ### The `/r` Location alongside `/svn`
 
 For content hosting you may want to keep URLs backend-neutral.
 For that purpose this image will expose `/r` as read-only variant of `/svn`.
-This is done only if `AUTHN`=`anon`, where it's up to the reverse proxy to expose `/r` or not.
+This is done only if `-DAUTHN=anon`, where it's up to the reverse proxy to expose `/r` or not.
 Also we only enable this with `RWEB`.
 
 ### `solsson/svn-httpd:proxied`
 
-Deprecated. Use `AUTHN`=`anon` instead.
+Deprecated. Use `-DAUTHN=anon` instead.
 
 ## [solsson/rweb](https://hub.docker.com/r/solsson/rweb/)
 

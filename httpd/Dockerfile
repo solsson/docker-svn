@@ -7,12 +7,10 @@ ENV SVN_BZ2_SHA1 51d7e5329ad86a650f8fc806eb68e581055a3fd1
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# we have the stretch package repo from upstream, so let's use https://packages.debian.org/stretch/ca-certificates
-ENV CA_CERTIFICATES_VERSION 20161130
-
 RUN depsRuntime=" \
 		libsqlite3-0 \
 		curl \
+		ca-certificates \
 		libserf-1-1 \
 	" \
 	&& depsBuild=" \
@@ -44,7 +42,6 @@ RUN depsRuntime=" \
 	&& cd ../../ \
 	&& rm -r src/svn \
 	&& apt-get purge -y --auto-remove $depsBuild \
-	&& apt-get install -y ca-certificates=$CA_CERTIFICATES_VERSION \
 	&& rm -r /var/lib/apt/lists/* \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
@@ -57,17 +54,18 @@ RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 
 # Set to non-empty to enable /admin/repocreate http endpoint
 ENV ADMIN_REST_ACCESS ""
-# Set to "anon" to pick up username (for commit log etc) from BASIC auth header without verification of credentials
-ENV AUTHN ""
-# Set to "svn"/"inrepo"/"admrepo", see conf/authz/options.conf
-ENV AUTHZ ""
-# Set to "fpm" to enable rweb conf
-ENV RWEB ""
-
-# Allow IfDefine based on container runtime env
-RUN sed -i 's/-DFOREGROUND/-DFOREGROUND -DAUTHN=$AUTHN -DAUTHZ=$AUTHZ -DRWEB=$RWEB/' /usr/local/bin/httpd-foreground
 
 # httpd config has hard coded /svn for parent path, but if we declare a Volume here you can't prepare repositories in downstream images
 #VOLUME /svn
 
 RUN mkdir /svn && chown daemon /svn
+
+# Env requires wrapper entrypoint, which we abandoned in https://github.com/solsson/docker-library-httpd/tree/stretch
+# Set to "anon" to pick up username (for commit log etc) from BASIC auth header without verification of credentials
+#ENV AUTHN ""
+# Set to "svn"/"inrepo"/"admrepo", see conf/authz/options.conf
+#ENV AUTHZ ""
+# Set to "fpm" to enable rweb conf
+#ENV RWEB ""
+
+CMD [ "-DAUTHN=", "-DAUTHZ=", "-DRWEB=" ]
