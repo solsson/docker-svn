@@ -18,7 +18,7 @@ Runtime configuration, as environment variables:
 
 Runtime configuration, as [CMD](https://docs.docker.com/engine/reference/builder/#cmd) override:
  * `-DAUTHN=anon` enables [mod_auth_anon](http://httpd.apache.org/docs/current/mod/mod_authn_anon.html) so that usernames from reverse proxy end up in svn logs
- * `-DAUTHZ=svn` enables [mod_autnz_svn](http://svnbook.red-bean.com/nightly/en/svn.serverconfig.httpd.html#svn.serverconfig.httpd.ref.mod_authz_svn) with path `/svn/aunhz`
+ * `-DAUTHZ=svn` enables [mod_autnz_svn](http://svnbook.red-bean.com/nightly/en/svn.serverconfig.httpd.html#svn.serverconfig.httpd.ref.mod_authz_svn) with path `/svn/authz`
  * `-DRWEB=fpm` is used from `solsson/rweb-httpd` (see below) to enable rweb config directives
 
 ### The `/r` Location alongside `/svn`
