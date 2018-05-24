@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl3 \
     libcurl4-openssl-dev \
     graphicsmagick \
+    ghostscript \
     locales \
     zlib1g-dev \
     libicu57 \
