@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     locales \
     zlib1g-dev \
     libicu57 \
+    poppler-utils \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
