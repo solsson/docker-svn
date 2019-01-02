@@ -9,6 +9,7 @@ RUN depsRuntime=' \
 		libsqlite3-0 \
 		ca-certificates \
 		curl \
+		jq \
 		libapr1 \
 		libaprutil1 \
 		libneon27 \
