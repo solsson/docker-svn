@@ -2,7 +2,7 @@
 FROM debian:stretch-slim@sha256:6c31161e090aa3f62b9ee1414b58f0a352b42b2b7827166e57724a8662fe4b38
 
 ENV SVN_VERSION 1.8.19
-ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
+ENV SVN_BZ2_URL https://archive.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
 ENV SVN_BZ2_SHA1 51d7e5329ad86a650f8fc806eb68e581055a3fd1
 
 RUN depsRuntime=' \
