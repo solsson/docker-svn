@@ -1,4 +1,3 @@
-# TODO use the same stretch-slim build that current ../rweb/fpm-svn gets
 FROM debian:stretch-slim@sha256:6c31161e090aa3f62b9ee1414b58f0a352b42b2b7827166e57724a8662fe4b38
 
 ENV SVN_VERSION 1.8.19
