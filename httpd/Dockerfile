@@ -1,8 +1,8 @@
 
-FROM solsson/httpd-stretch@sha256:5e5359fd904cf2436b6b6811523cf3f0a0bb89eeaa62c667b6d7df901f25d06e
+FROM httpd:2.4.37@sha256:a613d8f1dbb35b18cdf5a756d2ea0e621aee1c25a6321b4a05e6414fdd3c1ac1
 
 ENV SVN_VERSION 1.8.19
-ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
+ENV SVN_BZ2_URL https://archive.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
 ENV SVN_BZ2_SHA1 51d7e5329ad86a650f8fc806eb68e581055a3fd1
 
 ENV DEBIAN_FRONTEND noninteractive
