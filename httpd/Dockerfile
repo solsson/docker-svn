@@ -18,7 +18,7 @@ RUN depsRuntime=" \
 		bzip2 \
 		gcc \
 		libpcre++-dev \
-		libssl-dev=$OPENSSL_VERSION \
+		libssl-dev \
 		make \
 		libsqlite3-dev \
 		zlib1g-dev \
