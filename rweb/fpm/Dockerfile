@@ -1,13 +1,14 @@
 FROM solsson/fpm-svn
 
-ENV RWEB_VERSION=v1.7.3
+ENV RWEB_VERSION=v1.7.8
 ENV RWEB_TGZ_URL=https://github.com/Reposoft/rweb/archive/$RWEB_VERSION.tar.gz
-ENV RWEB_TGZ_SHA1=ce16dd26a450fe0d18bb46aaa1cb991751e82a1c
+ENV RWEB_TGZ_SHA1=482271c2e837c7eb89a094ed34bb7c4ba4efefd3
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates \
     libcurl3 \
     libcurl4-openssl-dev \
+    ghostscript \
     graphicsmagick \
     locales \
     zlib1g-dev \
