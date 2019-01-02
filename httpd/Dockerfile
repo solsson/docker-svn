@@ -1,19 +1,16 @@
 
-# https://github.com/docker-library/repo-info/blob/master/repos/httpd/tag-details.md
-FROM httpd:2.4.25@sha256:4612fba4347bd87eaeecd5c522d844f26cc4065b45eef9291277497946b7a86c
+FROM httpd:2.4.37@sha256:a613d8f1dbb35b18cdf5a756d2ea0e621aee1c25a6321b4a05e6414fdd3c1ac1
 
 ENV SVN_VERSION 1.8.19
-ENV SVN_BZ2_URL https://www.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
+ENV SVN_BZ2_URL https://archive.apache.org/dist/subversion/subversion-$SVN_VERSION.tar.bz2
 ENV SVN_BZ2_SHA1 51d7e5329ad86a650f8fc806eb68e581055a3fd1
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# we have the stretch package repo from upstream, so let's use https://packages.debian.org/stretch/ca-certificates
-ENV CA_CERTIFICATES_VERSION 20161130
-
 RUN depsRuntime=" \
 		libsqlite3-0 \
 		curl \
+		ca-certificates \
 		libserf-1-1 \
 	" \
 	&& depsBuild=" \
@@ -45,7 +42,6 @@ RUN depsRuntime=" \
 	&& cd ../../ \
 	&& rm -r src/svn \
 	&& apt-get purge -y --auto-remove $depsBuild \
-	&& apt-get install -y ca-certificates=$CA_CERTIFICATES_VERSION \
 	&& rm -r /var/lib/apt/lists/* \
 	&& echo "Include conf/svn/httpd.conf" >> conf/httpd.conf
 
@@ -58,17 +54,18 @@ RUN ln -s $(pwd)/admin-cgi/repocreate /usr/local/bin/repocreate
 
 # Set to non-empty to enable /admin/repocreate http endpoint
 ENV ADMIN_REST_ACCESS ""
-# Set to "anon" to pick up username (for commit log etc) from BASIC auth header without verification of credentials
-ENV AUTHN ""
-# Set to "svn"/"inrepo"/"admrepo", see conf/authz/options.conf
-ENV AUTHZ ""
-# Set to "fpm" to enable rweb conf
-ENV RWEB ""
-
-# Allow IfDefine based on container runtime env
-RUN sed -i 's/-DFOREGROUND/-DFOREGROUND -DAUTHN=$AUTHN -DAUTHZ=$AUTHZ -DRWEB=$RWEB/' /usr/local/bin/httpd-foreground
 
 # httpd config has hard coded /svn for parent path, but if we declare a Volume here you can't prepare repositories in downstream images
 #VOLUME /svn
 
 RUN mkdir /svn && chown daemon /svn
+
+# Env requires wrapper entrypoint, which we abandoned in https://github.com/solsson/docker-library-httpd/tree/stretch
+# Set to "anon" to pick up username (for commit log etc) from BASIC auth header without verification of credentials
+#ENV AUTHN ""
+# Set to "svn"/"inrepo"/"admrepo", see conf/authz/options.conf
+#ENV AUTHZ ""
+# Set to "fpm" to enable rweb conf
+#ENV RWEB ""
+
+CMD [ "-DAUTHN=", "-DAUTHZ=", "-DRWEB=" ]
