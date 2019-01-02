@@ -68,5 +68,5 @@ RUN mkdir /svn && chown daemon /svn
 # Set to "fpm" to enable rweb conf
 #ENV RWEB ""
 
-ENTRYPOINT ["httpd-foreground"]
+ENTRYPOINT [ "httpd", "-DFOREGROUND" ]
 CMD [ "-DAUTHN=", "-DAUTHZ=", "-DRWEB=" ]
